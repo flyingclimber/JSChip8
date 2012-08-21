@@ -87,9 +87,6 @@ function emulateCycle() {
         }
     }
 }
-    }
-
-}
 
 function clearDisplay() {
     var canvas = document.getElementById('canvas');
