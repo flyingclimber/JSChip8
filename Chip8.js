@@ -112,7 +112,7 @@ function emulateCycle() {
             pc += 2;
             break;
         case 0x0018: //FX18	Sets the sound timer to VX.
-            sound_timer = (opcodde & 0xF00) >> 8;
+            sound_timer = (opcode & 0xF00) >> 8;
             pc +=2;
             break;
         //FX1E	Adds VX to I.[3]
