@@ -1,4 +1,3 @@
-//OPCODES 15
 //MEMORY 4k
 //Registers
 var chip8_rv0 = 0;
@@ -69,6 +68,7 @@ function loadGame(file) {
 function emulateCycle() {
     opcode = this.memory[pc] << 8 | memory[pc + 1];
 
+    //OPCODES 15
     switch(opcode & 0xF000) {
         case 0xA000:
             I = opcode & 0x0FFF;
