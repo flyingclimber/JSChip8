@@ -99,23 +99,23 @@ function clearStack() {
 }
 
 function clearAllRegisters() {
-    var chip8_rv0 = 0;
-    var chip8_rv1 = 0;
-    var chip8_rv2 = 0;
-    var chip8_rv3 = 0;
-    var chip8_rv3 = 0;
-    var chip8_rv4 = 0;
-    var chip8_rv5 = 0;
-    var chip8_rv6 = 0;
-    var chip8_rv7 = 0;
-    var chip8_rv8 = 0;
-    var chip8_rv9 = 0;
-    var chip8_rv10 = 0;
-    var chip8_rv11 = 0;
-    var chip8_rv12 = 0;
-    var chip8_rv13 = 0;
-    var chip8_rv14 = 0;
-    var chip8_rve = 0;
+    chip8_rv0 = 0;
+    chip8_rv1 = 0;
+    chip8_rv2 = 0;
+    chip8_rv3 = 0;
+    chip8_rv3 = 0;
+    chip8_rv4 = 0;
+    chip8_rv5 = 0;
+    chip8_rv6 = 0;
+    chip8_rv7 = 0;
+    chip8_rv8 = 0;
+    chip8_rv9 = 0;
+    chip8_rv10 = 0;
+    chip8_rv11 = 0;
+    chip8_rv12 = 0;
+    chip8_rv13 = 0;
+    chip8_rv14 = 0;
+    chip8_rve = 0;
 }
 
 clearMemory() {
