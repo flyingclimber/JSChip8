@@ -1,21 +1,6 @@
 //MEMORY 4k
 //Registers
-var chip8_rv0 = 0;
-var chip8_rv1 = 0;
-var chip8_rv2 = 0;
-var chip8_rv3 = 0;
-var chip8_rv3 = 0;
-var chip8_rv4 = 0;
-var chip8_rv5 = 0;
-var chip8_rv6 = 0;
-var chip8_rv7 = 0;
-var chip8_rv8 = 0;
-var chip8_rv9 = 0;
-var chip8_rv10 = 0;
-var chip8_rv11 = 0;
-var chip8_rv12 = 0;
-var chip8_rv13 = 0;
-var chip8_rv14 = 0;
+chip8_rv = new Array();
 var chip8_rve = 0;
 
 function main() {
@@ -35,7 +20,6 @@ function main() {
 
 function setupGraphics() {
  //Clear screen
-
 }
 
 function setupInput() {
@@ -105,7 +89,9 @@ function emulateCycle() {
         //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
         //EX9E	Skips the next instruction if the key stored in VX is pressed.
         //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-        //FX07	Sets VX to the value of the delay timer.
+        case 0x0007: //FX07	Sets VX to the value of the delay timer.
+            chip8_v[(opcode & 0x0F00) >> 8] = delay_timer;
+            break; 
         //FX0A	A key press is awaited, and then stored in VX.
         case 0x0015: //FX15	Sets the delay timer to VX.
             delay_timer = (opcode & 0x0F00) >> 8;
@@ -145,25 +131,10 @@ function clearStack() {
 }
 
 function clearAllRegisters() {
-    chip8_rv0 = 0;
-    chip8_rv1 = 0;
-    chip8_rv2 = 0;
-    chip8_rv3 = 0;
-    chip8_rv3 = 0;
-    chip8_rv4 = 0;
-    chip8_rv5 = 0;
-    chip8_rv6 = 0;
-    chip8_rv7 = 0;
-    chip8_rv8 = 0;
-    chip8_rv9 = 0;
-    chip8_rv10 = 0;
-    chip8_rv11 = 0;
-    chip8_rv12 = 0;
-    chip8_rv13 = 0;
-    chip8_rv14 = 0;
-    chip8_rve = 0;
+    for(i = 0; i< 16; i++) {
+        chip8_rv[i] = 0;
+    }
 }
 
-clearMemory() {
-    
+function clearMemory() {
 }
