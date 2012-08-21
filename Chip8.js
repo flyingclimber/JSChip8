@@ -75,7 +75,11 @@ function emulateCycle() {
         //00E0	Clears the screen.
         //00EE	Returns from a subroutine.
         //1NNN	Jumps to address NNN.
-        //2NNN	Calls subroutine at NNN.
+        case 0x2000: //2NNN	Calls subroutine at NNN.
+            stack[sp] = pc; //set the strack pointer *before* we jump
+            ++sp; //increment so that we don't over writie it
+            pc = opcode * 0x0FFF;
+            break;
         //3XNN	Skips the next instruction if VX equals NN.
         //4XNN	Skips the next instruction if VX doesn't equal NN.
         //5XY0	Skips the next instruction if VX equals VY. 
@@ -92,10 +96,10 @@ function emulateCycle() {
         //8XYE	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.[2]
         //9XY0	Skips the next instruction if VX doesn't equal VY.
         //ANNN	Sets I to the address NNN.
-            case 0xA000:
-                I = opcode & 0x0FFF;
-                pc += 2;
-                break;
+        case 0xA000:
+            I = opcode & 0x0FFF;
+            pc += 2;
+            break;
         //BNNN	Jumps to the address NNN plus V0.
         //CXNN	Sets VX to a random number and NN.
         //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
@@ -103,8 +107,14 @@ function emulateCycle() {
         //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
         //FX07	Sets VX to the value of the delay timer.
         //FX0A	A key press is awaited, and then stored in VX.
-        //FX15	Sets the delay timer to VX.
-        //FX18	Sets the sound timer to VX.
+        case 0x0015: //FX15	Sets the delay timer to VX.
+            delay_timer = (opcode & 0x0F00) >> 8;
+            pc += 2;
+            break;
+        case 0x0018: //FX18	Sets the sound timer to VX.
+            sound_timer = (opcodde & 0xF00) >> 8;
+            pc +=2;
+            break;
         //FX1E	Adds VX to I.[3]
         //FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
         //FX33	Stores the Binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
@@ -119,7 +129,7 @@ function emulateCycle() {
         if(soundtimer > 0) {
             if(sound_timer == 1)
                 console.log("BEEP!\n");
-            --soundtimer;
+            --sound_timer;
         }
     }
 }
