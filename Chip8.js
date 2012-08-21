@@ -91,6 +91,7 @@ function emulateCycle() {
         //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
         case 0x0007: //FX07	Sets VX to the value of the delay timer.
             chip8_v[(opcode & 0x0F00) >> 8] = delay_timer;
+            pc +=2;
             break; 
         //FX0A	A key press is awaited, and then stored in VX.
         case 0x0015: //FX15	Sets the delay timer to VX.
