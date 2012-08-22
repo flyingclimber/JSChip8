@@ -161,7 +161,25 @@ function emulateCycle() {
                 chip8_v[(opcode & 0x0F00)] = Math.floor((Math.random()*255)+1) & 0x00FF;
                 pc += 2;
                 break;
-            //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
+            case 0xD000: //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
+                var x = chip8_r[(opcode & 0x0F00) >> 8];
+                var y = chip8_r[(opcode & 0x00F0) >> 4];
+                var h = (opcode & 0x000F);
+
+                chip8_r[0xF] = 0;
+                for (var yline = 0; yline < h; yline++) {
+                    pixel = memory[I + yline];
+                    for( var xline = 0; xline < 8; xline++) {
+                        if((pixel & (0x80 >> xline)) != 0 ) {
+                            if[gfx[(x + xline + ((y + yline) * 64))] == 1]
+                                V[0xF] = 1;
+                            gfx[x + xline + ((y + yline) * 64)] ^ 1; 
+                        }
+                    }
+                }
+
+                drawFlag = true;
+                pc += 2;
             case: 0xE000:
                 switch(opcode & 0x000F)
                     case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
