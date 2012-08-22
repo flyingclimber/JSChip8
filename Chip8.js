@@ -188,6 +188,7 @@ function emulateCycle() {
             }
         }
     }
+    skip = 0;
 }
 
 function clearDisplay() {
