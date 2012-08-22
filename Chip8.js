@@ -208,11 +208,11 @@ function emulateCycle() {
                         pc += 2;
                         break;
                     case 0x0015: //FX15	Sets the delay timer to VX.
-                        delay_timer = (opcode & 0x0F00) >> 8;
+                        delay_timer = chip8_v[(opcode & 0x0F00) >> 8];
                         pc += 2;
                         break;
                     case 0x0018: //FX18	Sets the sound timer to VX.
-                        sound_timer = (opcode & 0x0F00) >> 8;
+                        sound_timer = chip8_v[(opcode & 0x0F00) >> 8];
                         pc += 2;
                         break;
                     case 0x001E: //FX1E	Adds VX to I.[3]
