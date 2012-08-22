@@ -69,15 +69,41 @@ function emulateCycle() {
         //5XY0	Skips the next instruction if VX equals VY. 
         //6XNN	Sets VX to NN.
         //7XNN	Adds NN to VX.
-        //8XY0	Sets VX to the value of VY.
-        //8XY1	Sets VX to VX or VY.
-        //8XY2	Sets VX to VX and VY.
-        //8XY3	Sets VX to VX xor VY.
-        //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
-        //8XY5	VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-        //8XY6	Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.[2]
-        //8XY7	Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-        //8XYE	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.[2]
+        case 0x8000:
+            switch(opcode & 0x000F) { //8XY0 Sets VX to the value of VY.
+                case 0x0000:
+                    chip8_v[(opcode & 0x0F00) >> 8] = (opcode & 0x00F0) >> 4;
+                    pc += 2;
+                    break;
+                case 0x0001: //8XY1  Sets VX to VX or VY.
+                    chip8_v[(opcode & 0x0F00) >> 8] = 
+                        (chip8_v[(opcode & 0x0F00) >> 8]) | ((opcode & 0x00F0) >> 4);
+                    pc += 2;
+                    break;
+                case 0x002: //8XY2	Sets VX to VX and VY.
+                    chip8_v[(opcode & 0x0F00) >> 8] = 
+                        (chip8_v[(opcode & 0x0F00) >> 8]) & ((opcode & 0x00F0) >> 4);
+                    pc += 2;
+                    break;
+                case 0x003: //8XY3	Sets VX to VX xor VY.
+                    chip8_v[(opcode & 0x0F00) >> 8] = 
+                        (chip8_v[(opcode & 0x0F00) >> 8]) ^ ((opcode & 0x00F0) >> 4);
+                    pc += 2;
+                    break;
+                case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
+                    pc += 2;
+                    break;
+                case 0x0005: //8XY5	VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+                    pc += 2;
+                    break;
+                case 0x0006: //8XY6	Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.[2]
+                    pc += 2;
+                    break;
+                case 0x0007: //8XY7	Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+                    pc += 2;
+                    break;
+                case 0x000E: //8XYE	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.[2]
+         }
         //9XY0	Skips the next instruction if VX doesn't equal VY.
         //ANNN	Sets I to the address NNN.
         case 0xA000:
@@ -91,7 +117,7 @@ function emulateCycle() {
         //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
         case 0x0007: //FX07	Sets VX to the value of the delay timer.
             chip8_v[(opcode & 0x0F00) >> 8] = delay_timer;
-            pc +=2;
+            pc += 2;
             break; 
         //FX0A	A key press is awaited, and then stored in VX.
         case 0x0015: //FX15	Sets the delay timer to VX.
@@ -113,7 +139,7 @@ function emulateCycle() {
         if(delay_timer > 0)
             --delay_timer;
         
-        if(soundtimer > 0) {
+        if(sound_timer > 0) {
             if(sound_timer == 1)
                 console.log("BEEP!\n");
             --sound_timer;
