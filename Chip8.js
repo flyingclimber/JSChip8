@@ -71,7 +71,7 @@ function emulateCycle() {
             case 0x2000: //2NNN	Calls subroutine at NNN.
                 stack[sp] = pc; //set the strack pointer *before* we jump
                 ++sp; //increment so that we don't over writie it
-                pc = opcode * 0x0FFF;
+                pc = opcode & 0x0FFF;
                 break;
             case 0x3000: //3XNN	Skips the next instruction if VX equals NN.
                 if (((opcode & 0x0F00) >> 8) == (opcode & 0x00FF) >> 4)
@@ -163,7 +163,7 @@ function emulateCycle() {
                         pc += 2;
                         break;
                     case 0x0018: //FX18	Sets the sound timer to VX.
-                        sound_timer = (opcode & 0xF00) >> 8;
+                        sound_timer = (opcode & 0x0F00) >> 8;
                         pc += 2;
                         break;
                     case 0x001E: //FX1E	Adds VX to I.[3]
