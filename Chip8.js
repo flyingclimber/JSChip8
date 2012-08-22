@@ -116,7 +116,7 @@ function emulateCycle() {
         //EX9E	Skips the next instruction if the key stored in VX is pressed.
         //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
         case 0xF000:
-            switch(opcode & 0x00FF):
+            switch(opcode & 0x00FF) {
                 case 0x0007: //FX07	Sets VX to the value of the delay timer.
                     chip8_v[(opcode & 0x0F00) >> 8] = delay_timer;
                     pc += 2;
@@ -147,6 +147,7 @@ function emulateCycle() {
                 case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I.[4]                        
                     pc += 2;
                     break;
+        }
         default:
             console.log("Unknown opcode 0x\n" + opcode);
 
