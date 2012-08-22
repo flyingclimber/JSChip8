@@ -74,19 +74,28 @@ function emulateCycle() {
                 pc = opcode & 0x0FFF;
                 break;
             case 0x3000: //3XNN	Skips the next instruction if VX equals NN.
-                if (((opcode & 0x0F00) >> 8) == (opcode & 0x00FF) >> 4)
+                if (((opcode & 0x0F00) >> 8) == (opcode & 0x00FF) >> 4) {
                     skip = 1;
-                pc += 2;
+                    pc += 4;
+                } else {
+                    pc += 2;
+                }
                 break;
             case 0x4000: //4XNN	Skips the next instruction if VX doesn't equal NN.
-                if (((opcode & 0x0F00) >> 8) != (opcode & 0x00FF) >> 4) 
+                if (((opcode & 0x0F00) >> 8) != (opcode & 0x00FF) >> 4) {
                     skip = 1;
-                pc += 2;
+                    pc += 4;  
+                } else {
+                    pc += 2;
+                }
                 break;
             case 0x5000: //5XY0	Skips the next instruction if VX equals VY. 
-                if (((opcode & 0x0F00) >> 8) == (opcode & 0x00F0) >> 4)
+                if (((opcode & 0x0F00) >> 8) == (opcode & 0x00F0) >> 4) {
                     skip = 1;
-                pc += 2;
+                    pc += 4;
+                } else {
+                    pc += 2;
+                }
                 break;
             case 0x6000: //6XNN	Sets VX to NN.
                 chip8_v[(opcode & 0x0F00) >> 8] = (opcode & 0x00FF);
@@ -132,9 +141,12 @@ function emulateCycle() {
                     case 0x000E: //8XYE	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.[2]
              }
             case 0x9XY0: //9XY0	Skips the next instruction if VX doesn't equal VY.
-                if (chip8_v[(opcode & 0x0F00)] == chip8_v[opcode & 0x00F0])
+                if (chip8_v[(opcode & 0x0F00)] == chip8_v[opcode & 0x00F0]) {
                     skip = 1;
-                pc += 2;
+                    pc += 4;
+                } else {
+                    pc += 2;
+                }
                 break;
             case 0xA000: //ANNN	Sets I to the address NNN.
                 I = opcode & 0x0FFF;
@@ -150,14 +162,20 @@ function emulateCycle() {
             case: 0x9000:
                 switch(opcode & 0x000F)
                     case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
-                        if ( keyPressed(chip8_v[opcode & 0x0F00]))
+                        if ( keyPressed(chip8_v[opcode & 0x0F00])) {
                             skip = 1;
-                        pc += 2;
+                            pc +=4;
+                        } else {
+                            pc += 2;
+                        }
                         break;
                     case 0x0001: //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-                        if ( ! keyPressed(chip8_v[opcode & 0x0F00]))
+                        if ( ! keyPressed(chip8_v[opcode & 0x0F00])) {
                             skip = 1;
-                        pc += 2;
+                            pc += 4;
+                        } else {
+                            pc += 2;
+                        }
                         break;
             case 0xF000:
                 switch(opcode & 0x00FF) {
