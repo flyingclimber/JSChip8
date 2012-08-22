@@ -131,14 +131,21 @@ function emulateCycle() {
                         break;
                     case 0x000E: //8XYE	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.[2]
              }
-            //9XY0	Skips the next instruction if VX doesn't equal VY.
-            //ANNN	Sets I to the address NNN.
-            case 0xA000:
+            case 0x9XY0: //9XY0	Skips the next instruction if VX doesn't equal VY.
+                if (chip8_v[(opcode & 0x0F00)] == chip8_v[opcode & 0x00F0])
+                    skip = 1;
+                pc += 2;
+                break;
+            case 0xA000: //ANNN	Sets I to the address NNN.
                 I = opcode & 0x0FFF;
                 pc += 2;
                 break;
             //BNNN	Jumps to the address NNN plus V0.
-            //CXNN	Sets VX to a random number and NN.
+
+            case 0xC000: //CXNN	Sets VX to a random number and NN.
+                chip8_v[(opcode & 0x0F00)] = Math.floor((Math.random()*255)+1) & 0x00FF;
+                pc += 2;
+                break;
             //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
             //EX9E	Skips the next instruction if the key stored in VX is pressed.
             //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
