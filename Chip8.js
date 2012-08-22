@@ -115,24 +115,38 @@ function emulateCycle() {
         //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
         //EX9E	Skips the next instruction if the key stored in VX is pressed.
         //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-        case 0x0007: //FX07	Sets VX to the value of the delay timer.
-            chip8_v[(opcode & 0x0F00) >> 8] = delay_timer;
-            pc += 2;
-            break; 
-        //FX0A	A key press is awaited, and then stored in VX.
-        case 0x0015: //FX15	Sets the delay timer to VX.
-            delay_timer = (opcode & 0x0F00) >> 8;
-            pc += 2;
-            break;
-        case 0x0018: //FX18	Sets the sound timer to VX.
-            sound_timer = (opcode & 0xF00) >> 8;
-            pc +=2;
-            break;
-        //FX1E	Adds VX to I.[3]
-        //FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
-        //FX33	Stores the Binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
-        //FX55	Stores V0 to VX in memory starting at address I.[4]
-        //FX65	Fills V0 to VX with values from memory starting at address I.[4]                        
+        case 0xF000:
+            switch(opcode & 0x00FF):
+                case 0x0007: //FX07	Sets VX to the value of the delay timer.
+                    chip8_v[(opcode & 0x0F00) >> 8] = delay_timer;
+                    pc += 2;
+                    break; 
+                case 0x000A: //FX0A	A key press is awaited, and then stored in VX.
+                    pc += 2;
+                    break;
+                case 0x0015: //FX15	Sets the delay timer to VX.
+                    delay_timer = (opcode & 0x0F00) >> 8;
+                    pc += 2;
+                    break;
+                case 0x0018: //FX18	Sets the sound timer to VX.
+                    sound_timer = (opcode & 0xF00) >> 8;
+                    pc += 2;
+                    break;
+                case 0x001E: //FX1E	Adds VX to I.[3]
+                    pc += 2;
+                    break;
+                case 0x0029: //FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
+                    pc += 2;
+                    break;
+                case 0x0033: //FX33	Stores the Binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
+                    pc += 2;
+                    break;
+                case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.[4]
+                    pc += 2;
+                    break;
+                case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I.[4]                        
+                    pc += 2;
+                    break;
         default:
             console.log("Unknown opcode 0x\n" + opcode);
 
