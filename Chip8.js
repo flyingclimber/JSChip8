@@ -147,8 +147,18 @@ function emulateCycle() {
                 pc += 2;
                 break;
             //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
-            //EX9E	Skips the next instruction if the key stored in VX is pressed.
-            //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
+            case: 0x9000:
+                switch(opcode & 0x000F)
+                    case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
+                        if ( keyPressed(chip8_v[opcode & 0x0F00]))
+                            skip = 1;
+                        pc += 2;
+                        break;
+                    case 0x0001: //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
+                        if ( ! keyPressed(chip8_v[opcode & 0x0F00]))
+                            skip = 1;
+                        pc += 2;
+                        break;
             case 0xF000:
                 switch(opcode & 0x00FF) {
                     case 0x0007: //FX07	Sets VX to the value of the delay timer.
@@ -215,4 +225,9 @@ function clearAllRegisters() {
 }
 
 function clearMemory() {
+
+}
+
+function keyPressed() {
+
 }
