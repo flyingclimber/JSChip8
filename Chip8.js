@@ -1,8 +1,9 @@
 //MEMORY 4k
 //Registers
 chip8_rv = new Array();
-var chip8_rve = 0;
 var key = new Array();
+var stack = new Array();
+var memory = new Array();
 
 function main() {
     setupGraphics();
@@ -254,17 +255,21 @@ function clearDisplay() {
 }
 
 function clearStack() {
-
+    for(i = 0; i < 16; i++) {
+        strack[i] = 0;
+    }
 }
 
 function clearAllRegisters() {
-    for(i = 0; i< 16; i++) {
+    for(i = 0; i < 16; i++) {
         chip8_rv[i] = 0;
     }
 }
 
 function clearMemory() {
-
+    for(i = 0; i < 4096; i++) {
+        memory[i] = 0;
+    }
 }
 
 function detectKeyPress() {
