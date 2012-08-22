@@ -56,19 +56,45 @@ function emulateCycle() {
     switch(opcode & 0xF000) {
         //All opcodes from http://en.wikipedia.org/wiki/CHIP-8
         //0NNN  Calls RCA 1802 program at address NNN.
-        //00E0	Clears the screen.
-        //00EE	Returns from a subroutine.
-        //1NNN	Jumps to address NNN.
+        switch(opcode & 0x00FF) {
+            case 0x00E0: //00E0	Clears the screen.
+                clearScreen();
+                pc += 2;
+                break;
+            case 0x00EE: //00EE	Returns from a subroutine.
+                break;
+        }
+        case 0x1000: //1NNN	Jumps to address NNN.
+            pc += 2;
+            break;
         case 0x2000: //2NNN	Calls subroutine at NNN.
             stack[sp] = pc; //set the strack pointer *before* we jump
             ++sp; //increment so that we don't over writie it
             pc = opcode * 0x0FFF;
             break;
-        //3XNN	Skips the next instruction if VX equals NN.
-        //4XNN	Skips the next instruction if VX doesn't equal NN.
-        //5XY0	Skips the next instruction if VX equals VY. 
-        //6XNN	Sets VX to NN.
-        //7XNN	Adds NN to VX.
+        case 0x3000: //3XNN	Skips the next instruction if VX equals NN.
+            if (((opcode & 0x0F00) >> 8) == (opcode & 0x00FF) >> 4)
+                skip();
+            pc += 2;
+            break;
+        case 0x4000: //4XNN	Skips the next instruction if VX doesn't equal NN.
+            if (((opcode & 0x0F00) >> 8) != (opcode & 0x00FF) >> 4) 
+                skip();
+            pc += 2;
+            break;
+        case 0x5000: //5XY0	Skips the next instruction if VX equals VY. 
+            if (((opcode & 0x0F00) >> 8) == (opcode & 0x00F0) >> 4)
+                skip();
+            pc += 2;
+            break;
+        case 0x6000: //6XNN	Sets VX to NN.
+            chip8_v[(opcode & 0x0F00) >> 8] = (opcode & 0x00FF);
+            pc += 2;
+            break;
+        case 0x7000: //7XNN	Adds NN to VX.
+            chip8_v[(opcode & 0x0F00) >> 8] += (opcode & 0x00FF); //Does this need a carry?
+            pc += 2;
+            break;
         case 0x8000:
             switch(opcode & 0x000F) { //8XY0 Sets VX to the value of VY.
                 case 0x0000:
