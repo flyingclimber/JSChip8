@@ -15,7 +15,7 @@ function main() {
         emulateCylce();
         if (this.drawFlag) {
             drawGraphics();
-        }
+
         setKeys();
     }
 }
@@ -275,3 +275,7 @@ function clearMemory() {
 function detectKeyPress() {
 
 }
+
+function resetTimers() {
+    delay_timer = 0;
+    sound_timer = 0;
