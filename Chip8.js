@@ -15,7 +15,7 @@ function main() {
         emulateCylce();
         if (this.drawFlag) {
             drawGraphics();
-
+        }
         setKeys();
     }
 }
@@ -57,7 +57,7 @@ function emulateCycle() {
     if ( skip != 1 ) {
         opcode = this.memory[pc] << 8 | memory[pc + 1];
 
-        //OPCODES 15
+        //BEGIN OP CODES
         switch(opcode & 0xF000) {
             //All opcodes from http://en.wikipedia.org/wiki/CHIP-8
             //0NNN  Calls RCA 1802 program at address NNN.
@@ -143,8 +143,11 @@ function emulateCycle() {
                         pc += 2;
                         break;
                     case 0x000E: //8XYE	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.[2]
-             }
-            case 0x9XY0: //9XY0	Skips the next instruction if VX doesn't equal VY.
+                        pc += 2;
+                        break;
+                }
+                break;
+            case 0x9000: //9XY0	Skips the next instruction if VX doesn't equal VY.
                 if (chip8_v[(opcode & 0x0F00)] == chip8_v[opcode & 0x00F0]) {
                     skip = 1;
                     pc += 4;
@@ -172,7 +175,7 @@ function emulateCycle() {
                     pixel = memory[I + yline];
                     for( var xline = 0; xline < 8; xline++) {
                         if((pixel & (0x80 >> xline)) != 0 ) {
-                            if[gfx[(x + xline + ((y + yline) * 64))] == 1]
+                            if(gfx[(x + xline + ((y + yline) * 64))] == 1)
                                 V[0xF] = 1;
                             gfx[x + xline + ((y + yline) * 64)] ^ 1; 
                         }
@@ -181,8 +184,8 @@ function emulateCycle() {
 
                 drawFlag = true;
                 pc += 2;
-            case: 0xE000:
-                switch(opcode & 0x000F)
+            case 0xE000:
+                switch(opcode & 0x000F) {
                     case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
                         if ( key[chip8_v[opcode & 0x0F00] >> 8] != 0) {
                             skip = 1;
@@ -199,6 +202,7 @@ function emulateCycle() {
                             pc += 2;
                         }
                         break;
+                }
             case 0xF000:
                 switch(opcode & 0x00FF) {
                     case 0x0007: //FX07	Sets VX to the value of the delay timer.
@@ -231,9 +235,10 @@ function emulateCycle() {
                     case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I.[4]                        
                         pc += 2;
                         break;
-            }
+                }
             default:
                 console.log("Unknown opcode 0x\n" + opcode);
+            } //END OPCODES
 
             if(delay_timer > 0)
                 --delay_timer;
@@ -243,9 +248,9 @@ function emulateCycle() {
                     console.log("BEEP!\n");
                 --sound_timer;
             }
-        }
+    } else {
+        skip = 0;
     }
-    skip = 0;
 }
 
 function clearDisplay() {
@@ -279,3 +284,4 @@ function detectKeyPress() {
 function resetTimers() {
     delay_timer = 0;
     sound_timer = 0;
+}
