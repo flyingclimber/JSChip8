@@ -73,7 +73,7 @@ function emulateCycle() {
                 pc += 2;
                 break;
             case 0x2000: //2NNN	Calls subroutine at NNN.
-                stack[sp] = pc; //set the strack pointer *before* we jump
+                stack[sp] = pc; //set the stack pointer *before* we jump
                 ++sp; //increment so that we don't over writie it
                 pc = opcode & 0x0FFF;
                 break;
@@ -261,7 +261,7 @@ function clearDisplay() {
 
 function clearStack() {
     for(i = 0; i < 16; i++) {
-        strack[i] = 0;
+        stack[i] = 0;
     }
 }
 
