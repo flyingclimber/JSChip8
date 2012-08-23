@@ -220,7 +220,9 @@ function emulateCycle() {
                         sound_timer = chip8_v[(opcode & 0x0F00) >> 8];
                         pc += 2;
                         break;
-                    case 0x001E: //FX1E	Adds VX to I.[3]
+                    case 0x001E: //FX1E	Adds VX to I. Wikipedia tells me to set 0xF upon range overflow
+                        chip8_v(0xF) = ( I + chip8_v[(opcode & 0x0F00) >> 8] > 0xFFF ) ? 1 : 0;
+                        I += chip8_v[(opcode & 0x0F00) >> 8];
                         pc += 2;
                         break;
                     case 0x0029: //FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
