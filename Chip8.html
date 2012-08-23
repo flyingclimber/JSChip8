@@ -1,0 +1,12 @@
+<html>
+<head></head>
+<body>
+    <script src="Chip8.js"></script>
+    <canvas id="canvas" width="256" height="128"></canvas>
+    <input type="file" id="files" name="files[]" />
+    <output id="list"></output>
+    <script >
+      document.getElementById('files').addEventListener('change', loadGame, false);
+    </script>
+</body>
+</html>

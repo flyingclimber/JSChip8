@@ -4,6 +4,9 @@ chip8_rv = new Array();
 var key = new Array();
 var stack = new Array();
 var memory = new Array();
+var skip = 0;
+var pc = 0;
+var multiplier = 4;
 
 function main() {
     setupGraphics();
@@ -12,7 +15,7 @@ function main() {
     initialize();
     loadGame('pong');
     for (;;) {
-        emulateCylce();
+        emulateCycle();
         if (this.drawFlag) {
             drawGraphics();
         }
@@ -21,7 +24,10 @@ function main() {
 }
 
 function setupGraphics() {
- //Clear screen
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "rgb(1,0,0)";
+    ctx.fillRect (0, 0, 64*multiplier, 32*multiplier);
 }
 
 function setupInput() {
@@ -40,15 +46,30 @@ function initialize() {
     clearMemory();
     
     for(var i =0; i<80; i++) {
-        memory[i] = chip8_fontset[i];
+        // memory[i] = chip8_fontset[i];
     }
 
     resetTimers();
 }
 
-function loadGame(file) {
-    var reader = new FileReader();
-    reader.readAsBinaryString(file);
+function loadGame(evt) {
+    var files = evt.target.files; // FileList object
+
+    // Loop through the FileList and render image files as thumbnails.
+    for (var i = 0, f; f = files[i]; i++) {
+      var reader = new FileReader();
+
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+            console.log('GAME: ' + theFile.name + "\n" + e.target.result);
+            for(var i = 0; i < theFile.size; i++ ) {
+                memory[i + 512] = theFile.charCodeAt(i);
+            }
+        };
+      })(f);
+      reader.readAsBinaryString(f);
+    }
 }
 
 function emulateCycle() {
@@ -61,14 +82,16 @@ function emulateCycle() {
         switch(opcode & 0xF000) {
             //All opcodes from http://en.wikipedia.org/wiki/CHIP-8
             //0NNN  Calls RCA 1802 program at address NNN.
-            switch(opcode & 0x00FF) {
-                case 0x00E0: //00E0	Clears the screen.
-                    clearScreen();
-                    pc += 2;
-                    break;
-                case 0x00EE: //00EE	Returns from a subroutine.
-                    break;
-            }
+            case 0x0000:
+                switch(opcode & 0x00FF) {
+                    case 0x00E0: //00E0	Clears the screen.
+                        clearScreen();
+                        pc += 2;
+                        break;
+                    case 0x00EE: //00EE	Returns from a subroutine.
+                        break;
+                }
+                break
             case 0x1000: //1NNN	Jumps to address NNN.
                 pc += 2;
                 break;
@@ -255,8 +278,8 @@ function emulateCycle() {
 
 function clearDisplay() {
     var canvas = document.getElementById('canvas');
-    var ctx = convas.getContext('2d');
-    // FILL WITH BLACK
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect ( 0 , 0 , 150 , 150 );
 }
 
 function clearStack() {
@@ -284,4 +307,8 @@ function detectKeyPress() {
 function resetTimers() {
     delay_timer = 0;
     sound_timer = 0;
+}
+
+function setKeys() {
+
 }
