@@ -127,7 +127,7 @@ function emulateCycle() {
                         break;
                     case 0x003: //8XY3	Sets VX to VX xor VY.
                         chip8_v[(opcode & 0x0F00) >> 8] = 
-                            (chip8_v[(opcode & 0x0F00) >> 8]) ^ (chip8_v[(opcode & 0x00F0) >> 4)];
+                            (chip8_v[(opcode & 0x0F00) >> 8]) ^ (chip8_v[(opcode & 0x00F0) >> 4]);
                         pc += 2;
                         break;
                     case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
