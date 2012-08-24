@@ -61,13 +61,14 @@ function emulateCycle() {
         switch(opcode & 0xF000) {
             //All opcodes from http://en.wikipedia.org/wiki/CHIP-8
             //0NNN  Calls RCA 1802 program at address NNN.
-            switch(opcode & 0x00FF) {
-                case 0x00E0: //00E0	Clears the screen.
-                    clearScreen();
-                    pc += 2;
-                    break;
-                case 0x00EE: //00EE	Returns from a subroutine.
-                    break;
+            case 0x0000:
+                switch(opcode & 0x00FF) {
+                    case 0x00E0: //00E0	Clears the screen.
+                        clearScreen();
+                        pc += 2;
+                        break;
+                    case 0x00EE: //00EE	Returns from a subroutine.
+                        break;
             }
             case 0x1000: //1NNN	Jumps to address NNN.
                 pc += 2;
