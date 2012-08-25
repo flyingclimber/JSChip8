@@ -72,23 +72,16 @@ function initialize() {
 }
 
 function loadGame(evt) {
-    var files = evt.target.files; // FileList object
+    var files = evt.target.files;
 
-    // Loop through the FileList and render image files as thumbnails.
-    for (var i = 0, f; f = files[i]; i++) {
-        var reader = new FileReader();
-
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-            return function(e) {
-                console.log('GAME: ' + theFile.name + "\n" + e.target.result);
-                for(var i = 0; i < theFile.size; i++ ) {
-                    memory[i + 512] = theFile.charCodeAt(i);
-                }
-            };
-        })(f);
-        reader.readAsBinaryString(f);
+    var binaryHandle = new FileReader();
+    binaryHandle.onload = function () {
+        var ROM = binaryHandle.result;
+        for(var i = 0; i < ROM.length; i++ ) {
+            memory[i + 512] = ROM.charCodeAt(i);
+        }
     }
+    binaryHandle.readAsBinaryString(files[0]);
 }
 
 function emulateCycle() {
