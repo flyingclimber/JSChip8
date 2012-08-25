@@ -64,8 +64,8 @@ function initialize() {
     clearAllRegisters();
     clearMemory();
     
-    for(var i =0; i<80; i++) {
-        // memory[i] = chip8_fontset[i];
+    for(var i = 0; i < 80; i++) {
+        memory[i] = chip8_fontset[i];
     }
 
     resetTimers();
