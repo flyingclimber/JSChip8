@@ -27,6 +27,7 @@ chip8_fontset = [
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 ];
 var rom;
+var gfx = new Array(2048);
 
 function main() {
     setupGraphics();
@@ -214,6 +215,7 @@ function emulateCycle() {
 
             drawFlag = true;
             pc += 2;
+            break;
         case 0xE000:
             switch(opcode & 0x000F) {
                 case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
@@ -267,7 +269,7 @@ function emulateCycle() {
                     break;
             }
         default:
-            console.log("Unknown opcode 0x\n" + opcode);
+            console.log("Unknown opcode 0x" + opcode);
         } //END OPCODES
 
         if(delay_timer > 0)
@@ -314,5 +316,9 @@ function resetTimers() {
 }
 
 function setKeys() {
+
+}
+
+function drawGraphics() {
 
 }
