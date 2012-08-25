@@ -112,53 +112,53 @@ function emulateCycle() {
             pc = opcode & 0x0FFF;
             break;
         case 0x3000: //3XNN	Skips the next instruction if VX equals NN.
-            if (chip8_v[(opcode & 0x0F00) >> 8] == ( opcode & 0x00FF ) ) {
+            if (chip8_rv[(opcode & 0x0F00) >> 8] == ( opcode & 0x00FF ) ) {
                 pc += 4;
             } else {
                 pc += 2;
             }
             break;
         case 0x4000: //4XNN	Skips the next instruction if VX doesn't equal NN.
-            if (chip8_v[(opcode & 0x0F00) >> 8] != ( opcode & 0x00FF ) ) {
+            if (chip8_rv[(opcode & 0x0F00) >> 8] != ( opcode & 0x00FF ) ) {
                 pc += 4;  
             } else {
                 pc += 2;
             }
             break;
         case 0x5000: //5XY0	Skips the next instruction if VX equals VY. 
-            if (chip8_v[(opcode & 0x0F00) >> 8] == chip8_v[(opcode & 0x00F0) >> 4]) {
+            if (chip8_rv[(opcode & 0x0F00) >> 8] == chip8_rv[(opcode & 0x00F0) >> 4]) {
                 pc += 4;
             } else {
                 pc += 2;
             }
             break;
         case 0x6000: //6XNN	Sets VX to NN.
-            chip8_v[(opcode & 0x0F00) >> 8] = (opcode & 0x00FF);
+            chip8_rv[(opcode & 0x0F00) >> 8] = (opcode & 0x00FF);
             pc += 2;
             break;
         case 0x7000: //7XNN	Adds NN to VX.
-            chip8_v[(opcode & 0x0F00) >> 8] += (opcode & 0x00FF); //Does this need a carry?
+            chip8_rv[(opcode & 0x0F00) >> 8] += (opcode & 0x00FF); //Does this need a carry?
             pc += 2;
             break;
         case 0x8000:
             switch(opcode & 0x000F) { //8XY0 Sets VX to the value of VY.
                 case 0x0000:
-                    chip8_v[(opcode & 0x0F00) >> 8] = (opcode & 0x00F0) >> 4;
+                    chip8_rv[(opcode & 0x0F00) >> 8] = (opcode & 0x00F0) >> 4;
                     pc += 2;
                     break;
                 case 0x0001: //8XY1  Sets VX to VX or VY.
-                    chip8_v[(opcode & 0x0F00) >> 8] = 
-                        (chip8_v[(opcode & 0x0F00) >> 8]) | (chip8_v[(opcode & 0x00F0) >> 4]);
+                    chip8_rv[(opcode & 0x0F00) >> 8] = 
+                        (chip8_rv[(opcode & 0x0F00) >> 8]) | (chip8_rv[(opcode & 0x00F0) >> 4]);
                     pc += 2;
                     break;
                 case 0x002: //8XY2	Sets VX to VX and VY.
-                    chip8_v[(opcode & 0x0F00) >> 8] = 
-                        (chip8_v[(opcode & 0x0F00) >> 8]) & (chip8_v[(opcode & 0x00F0) >> 4]);
+                    chip8_rv[(opcode & 0x0F00) >> 8] = 
+                        (chip8_rv[(opcode & 0x0F00) >> 8]) & (chip8_rv[(opcode & 0x00F0) >> 4]);
                     pc += 2;
                     break;
                 case 0x003: //8XY3	Sets VX to VX xor VY.
-                    chip8_v[(opcode & 0x0F00) >> 8] = 
-                        (chip8_v[(opcode & 0x0F00) >> 8]) ^ (chip8_v[(opcode & 0x00F0) >> 4]);
+                    chip8_rv[(opcode & 0x0F00) >> 8] = 
+                        (chip8_rv[(opcode & 0x0F00) >> 8]) ^ (chip8_rv[(opcode & 0x00F0) >> 4]);
                     pc += 2;
                     break;
                 case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
@@ -179,7 +179,7 @@ function emulateCycle() {
             }
             break;
         case 0x9000: //9XY0	Skips the next instruction if VX doesn't equal VY.
-            if (chip8_v[(opcode & 0x0F00) >> 8] == chip8_v[opcode & 0x00F0] >> 4) {
+            if (chip8_rv[(opcode & 0x0F00) >> 8] == chip8_rv[opcode & 0x00F0] >> 4) {
                 pc += 4;
             } else {
                 pc += 2;
@@ -192,15 +192,15 @@ function emulateCycle() {
         //BNNN	Jumps to the address NNN plus V0.
 
         case 0xC000: //CXNN	Sets VX to a random number and NN.
-            chip8_v[(opcode & 0x0F00) >> 8] = Math.floor((Math.random()*255)+1) & (opcode && 0x00FF);
+            chip8_rv[(opcode & 0x0F00) >> 8] = Math.floor((Math.random()*255)+1) & (opcode && 0x00FF);
             pc += 2;
             break;
         case 0xD000: //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
-            var x = chip8_r[(opcode & 0x0F00) >> 8];
-            var y = chip8_r[(opcode & 0x00F0) >> 4];
+            var x = chip8_rv[(opcode & 0x0F00) >> 8];
+            var y = chip8_rv[(opcode & 0x00F0) >> 4];
             var h = (opcode & 0x000F);
 
-            chip8_r[0xF] = 0;
+            chip8_rv[0xF] = 0;
             for (var yline = 0; yline < h; yline++) {
                 pixel = memory[I + yline];
                 for( var xline = 0; xline < 8; xline++) {
@@ -217,14 +217,14 @@ function emulateCycle() {
         case 0xE000:
             switch(opcode & 0x000F) {
                 case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
-                    if ( key[chip8_v[opcode & 0x0F00] >> 8] != 0) {
+                    if ( key[chip8_rv[opcode & 0x0F00] >> 8] != 0) {
                         pc +=4;
                     } else {
                         pc += 2;
                     }
                     break;
                 case 0x0001: //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-                    if ( ! key[chip8_v[opcode & 0x0F00] >> 8] == 0) {
+                    if ( ! key[chip8_rv[opcode & 0x0F00] >> 8] == 0) {
                         pc += 4;
                     } else {
                         pc += 2;
@@ -234,23 +234,23 @@ function emulateCycle() {
         case 0xF000:
             switch(opcode & 0x00FF) {
                 case 0x0007: //FX07	Sets VX to the value of the delay timer.
-                    chip8_v[(opcode & 0x0F00) >> 8] = delay_timer;
+                    chip8_rv[(opcode & 0x0F00) >> 8] = delay_timer;
                     pc += 2;
                     break; 
                 case 0x000A: //FX0A	A key press is awaited, and then stored in VX.
                     pc += 2;
                     break;
                 case 0x0015: //FX15	Sets the delay timer to VX.
-                    delay_timer = chip8_v[(opcode & 0x0F00) >> 8];
+                    delay_timer = chip8_rv[(opcode & 0x0F00) >> 8];
                     pc += 2;
                     break;
                 case 0x0018: //FX18	Sets the sound timer to VX.
-                    sound_timer = chip8_v[(opcode & 0x0F00) >> 8];
+                    sound_timer = chip8_rv[(opcode & 0x0F00) >> 8];
                     pc += 2;
                     break;
                 case 0x001E: //FX1E	Adds VX to I. Wikipedia tells me to set 0xF upon range overflow
-                    chip8_v(0xF) = ( I + chip8_v[(opcode & 0x0F00) >> 8] > 0xFFF ) ? 1 : 0;
-                    I += chip8_v[(opcode & 0x0F00) >> 8];
+                    chip8_rv(0xF) = ( I + chip8_rv[(opcode & 0x0F00) >> 8] > 0xFFF ) ? 1 : 0;
+                    I += chip8_rv[(opcode & 0x0F00) >> 8];
                     pc += 2;
                     break;
                 case 0x0029: //FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
