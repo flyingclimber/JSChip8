@@ -26,13 +26,13 @@ chip8_fontset = [
   0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 ];
+var rom;
 
 function main() {
     setupGraphics();
     setupInput();
 
     initialize();
-    loadGame('pong');
     for (;;) {
         emulateCycle();
         if (this.drawFlag) {
@@ -54,32 +54,33 @@ function setupInput() {
 }
 
 function initialize() {
-    var pc = 0x200;
-    var opcode = 0;
-    var I = 0;
-    var sp = 0;
+    pc = 0x200;
+    opcode = 0;
+    I = 0;
+    sp = 0;
 
     clearDisplay();
     clearStack();
     clearAllRegisters();
     clearMemory();
     
-    for(var i = 0; i < 80; i++) {
+    for(var i = 0; i < 80; i++) { // Load font set
         memory[i] = chip8_fontset[i];
+    }
+
+    for(var i = 0; i < ROM.length; i++ ) { // Load ROM
+        memory[i + 512] = ROM.charCodeAt(i);
     }
 
     resetTimers();
 }
 
-function loadGame(evt) {
+function loadFile(evt) {
     var files = evt.target.files;
 
     var binaryHandle = new FileReader();
     binaryHandle.onload = function () {
-        var ROM = binaryHandle.result;
-        for(var i = 0; i < ROM.length; i++ ) {
-            memory[i + 512] = ROM.charCodeAt(i);
-        }
+        ROM = binaryHandle.result;
     }
     binaryHandle.readAsBinaryString(files[0]);
 }
@@ -87,7 +88,7 @@ function loadGame(evt) {
 function emulateCycle() {
     detectKeyPress();
 
-    opcode = this.memory[pc] << 8 | memory[pc + 1];
+    opcode = memory[pc] << 8 | memory[pc + 1];
 
     //BEGIN OP CODES
     switch(opcode & 0xF000) {
