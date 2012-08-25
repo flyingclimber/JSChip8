@@ -6,7 +6,7 @@ var stack = new Array();
 var memory = new Array();
 var skip = 0;
 var pc = 0;
-var multiplier = 4;
+var multiplier = 10;
 var chip8_fontset = new Array();
 chip8_fontset = [
   0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -27,7 +27,7 @@ chip8_fontset = [
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 ];
 var rom;
-var gfx = new Array(2048);
+var gfx = new Array( (64 * multiplier) * (32 * multiplier));
 
 function main() {
     setupGraphics();
@@ -206,9 +206,9 @@ function emulateCycle() {
                 pixel = memory[I + yline];
                 for( var xline = 0; xline < 8; xline++) {
                     if((pixel & (0x80 >> xline)) != 0 ) {
-                        if(gfx[(x + xline + ((y + yline) * 64))] == 1)
+                        if(gfx[(x + xline + ((y + yline) * 64 * multiplier))] == 1)
                             V[0xF] = 1;
-                        gfx[x + xline + ((y + yline) * 64)] ^ 1; 
+                        gfx[x + xline + ((y + yline) * 64 * multiplier)] ^= 1; 
                     }
                 }
             }
@@ -320,5 +320,16 @@ function setKeys() {
 }
 
 function drawGraphics() {
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    for(x = 0; x < (64 * multiplier); x++) {
+        for(y = 0; y < (32 * multiplier); y++) {
+            if(gfx[(64 * multiplier) * x + y]) {
+                ctx.fillStyle = "rgb(200,0,0)";
+                ctx.fillRect(x,y,multiplier,multiplier);
+            }
 
+        }
+    }
+    drawFlag = false;
 }
