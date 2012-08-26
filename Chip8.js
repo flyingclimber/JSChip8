@@ -369,7 +369,7 @@ function drawGraphics() {
     var ctx = canvas.getContext('2d');
     for(y = 0; y < 32; y++) {
         for(x = 0; x < 64; x++) {
-            if(gfx[32 * y + x]) {
+            if(gfx[(64 * y) + x]) {
                 ctx.fillStyle = "rgb(200,0,0)";
                 ctx.fillRect(x,y,1,1);
             }
