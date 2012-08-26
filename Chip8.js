@@ -285,6 +285,8 @@ function emulateCycle() {
                     pc += 2;
                     break;
                 case 0x0029: //FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
+                    character = chip8_rv[(opcode & 0x0F00) >> 8];
+                    I = parseInt(character, 16) * 5;
                     pc += 2;
                     break;
                 case 0x0033: //FX33	Stores the Binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
