@@ -366,9 +366,9 @@ function setKeys() {
 function drawGraphics() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
-    for(x = 0; x < (64 * multiplier); x++) {
-        for(y = 0; y < (32 * multiplier); y++) {
-            if(gfx[(64 * multiplier) * x + y]) {
+    for(y = 0; y < (32 * multiplier); y++) {
+        for(x = 0; x < (64 * multiplier); x++) {
+            if(gfx[(64 * multiplier) * y + x]) {
                 ctx.fillStyle = "rgb(200,0,0)";
                 ctx.fillRect(x,y,multiplier,multiplier);
             }
