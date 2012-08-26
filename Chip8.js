@@ -230,6 +230,9 @@ function emulateCycle() {
                     pc += 2;
                     break;
                 case 0x0033: //FX33	Stores the Binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
+                    memory[I] = chip8_rv[(opcode & 0x0F00) >> 8] / 100;
+                    memory[I + 1] = (chip8_rv[(opcode & 0x0F00) >> 8] / 10) % 10;
+                    memory[I + 2] = (chip8_rv[(opcode & 0x0F00) >> 8] % 100) % 10;
                     pc += 2;
                     break;
                 case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.[4]
