@@ -235,10 +235,20 @@ function emulateCycle() {
                     memory[I + 2] = (chip8_rv[(opcode & 0x0F00) >> 8] % 100) % 10;
                     pc += 2;
                     break;
-                case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.[4]
+                case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.
+                    reg = (opcode & 0x0F00) >> 8;
+                    for(var i = 0; i <= reg; i++) {
+                        memory[I + i] = chip8_rv[i];
+                        I += reg + 1;
+                    }
                     pc += 2;
                     break;
-                case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I.[4]                        
+                case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I 
+                    reg = (opcode & 0x0F00) >> 8;
+                    for(var i = 0; i <= reg; i++) {
+                        chip8_rv[i] = memory[I + i];
+                        I += reg + 1;
+                    }
                     pc += 2;
                     break;
             }
