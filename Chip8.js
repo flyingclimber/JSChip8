@@ -27,7 +27,7 @@ chip8_fontset = [
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 ];
 var rom;
-var gfx = new Array( (64 * multiplier) * (32 * multiplier));
+var gfx = new Array(64 * 32);
 
 function main() {
     setupGraphics();
@@ -47,7 +47,8 @@ function setupGraphics() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "rgb(1,0,0)";
-    ctx.fillRect (0, 0, 64*multiplier, 32*multiplier);
+    ctx.scale(multiplier,multiplier);
+    ctx.fillRect (0, 0, 64, 32);
 }
 
 function setupInput() {
@@ -235,9 +236,9 @@ function emulateCycle() {
                 pixel = memory[I + yline];
                 for( var xline = 0; xline < 8; xline++) {
                     if((pixel & (0x80 >> xline)) != 0 ) {
-                        if(gfx[(x + xline + ((y + yline) * 64 * multiplier))] == 1)
+                        if(gfx[(x + xline + ((y + yline) * 64))] == 1)
                             V[0xF] = 1;
-                        gfx[x + xline + ((y + yline) * 64 * multiplier)] ^= 1; 
+                        gfx[x + xline + ((y + yline) * 64)] ^= 1; 
                     }
                 }
             }
@@ -280,8 +281,8 @@ function emulateCycle() {
                     pc += 2;
                     break;
                 case 0x001E: //FX1E	Adds VX to I. Wikipedia tells me to set 0xF upon range overflow
-                    chip8_v[0xF] = ( I + chip8_v[(opcode & 0x0F00) >> 8] > 0xFFF ) ? 1 : 0;
-                    I += chip8_v[(opcode & 0x0F00) >> 8];
+                    chip8_rv[0xF] = ( I + chip8_rv[(opcode & 0x0F00) >> 8] > 0xFFF ) ? 1 : 0;
+                    I += chip8_rv[(opcode & 0x0F00) >> 8];
                     pc += 2;
                     break;
                 case 0x0029: //FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
@@ -366,11 +367,11 @@ function setKeys() {
 function drawGraphics() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
-    for(y = 0; y < (32 * multiplier); y++) {
-        for(x = 0; x < (64 * multiplier); x++) {
-            if(gfx[(64 * multiplier) * y + x]) {
+    for(y = 0; y < 32; y++) {
+        for(x = 0; x < 64; x++) {
+            if(gfx[32 * y + x]) {
                 ctx.fillStyle = "rgb(200,0,0)";
-                ctx.fillRect(x,y,multiplier,multiplier);
+                ctx.fillRect(x,y,1,1);
             }
 
         }
