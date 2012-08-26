@@ -159,7 +159,7 @@ function emulateCycle() {
             I = opcode & 0x0FFF;
             pc += 2;
             break;
-        case 0xB0000 //BNNN	Jumps to the address NNN plus V0.
+        case 0xB0000: //BNNN	Jumps to the address NNN plus V0.
             stack[sp] = pc;
             ++sp;
             pc = (opcode & 0x0FFF) + chip8_rv[0];
