@@ -67,10 +67,14 @@ function emulateCycle() {
                     pc += 2;
                     break;
                 case 0x00EE: //00EE	Returns from a subroutine.
+                    --sp;
+                    pc = stack[sp];
                     break;
         }
         case 0x1000: //1NNN	Jumps to address NNN.
-            pc += 2;
+            stack[sp] = pc;
+            ++sp;
+            pc = opcode & 0x0FFF;
             break;
         case 0x2000: //2NNN	Calls subroutine at NNN.
             stack[sp] = pc; //set the stack pointer *before* we jump
@@ -155,8 +159,11 @@ function emulateCycle() {
             I = opcode & 0x0FFF;
             pc += 2;
             break;
-        //BNNN	Jumps to the address NNN plus V0.
-
+        case 0xB0000 //BNNN	Jumps to the address NNN plus V0.
+            stack[sp] = pc;
+            ++sp;
+            pc = (opcode & 0x0FFF) + chip8_rv[0];
+            break;
         case 0xC000: //CXNN	Sets VX to a random number and NN.
             chip8_v[(opcode & 0x0F00) >> 8] = Math.floor((Math.random()*255)+1) & (opcode && 0x00FF);
             pc += 2;
