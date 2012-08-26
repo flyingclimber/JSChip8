@@ -313,6 +313,7 @@ function emulateCycle() {
                     pc += 2;
                     break;
             }
+            break;
         default:
             console.log("Unknown opcode 0x" + opcode);
         } //END OPCODES
