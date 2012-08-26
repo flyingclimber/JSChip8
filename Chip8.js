@@ -168,7 +168,7 @@ function emulateCycle() {
                     break;
                 case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
                     chip8_rv(0xF) = 
-                        ((chip8_rv[(opcode & 0x00F0) >> 4] + chip8_rv[opcode & 0x0F00 >> 8]) > 0xFFF) ? 1 : 0;
+                        ((chip8_rv[(opcode & 0x00F0) >> 4] + chip8_rv[opcode & 0x0F00 >> 8]) > 0xFF) ? 1 : 0;
                     chip8_rv[(opcode & 0x0F00)] = 
                         chip8_rv[(opcode & 0x0F00) >> 8] + chip8_rv[(opcode & 0x00F0) >> 4];
                     pc += 2;
@@ -191,7 +191,7 @@ function emulateCycle() {
                 case 0x0007: //8XY7	Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                     chip8_rv(0xF) =
                         ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 1: 0;
-                    chip8_rv[(opcode & 0x00F0) >> 4] =
+                    chip8_rv[(opcode & 0x0F00) >> 8] =
                         (chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]);
                     pc += 2;
                     break;
