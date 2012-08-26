@@ -167,18 +167,40 @@ function emulateCycle() {
                     pc += 2;
                     break;
                 case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
+                    chip8_rv(0xF) = 
+                        ((chip8_rv[(opcode & 0x00F0) >> 4] + chip8_rv[opcode & 0x0F00 >> 8]) > 0xFFF) ? 1 : 0;
+                    chip8_rv[(opcode & 0x0F00)] = 
+                        chip8_rv[(opcode & 0x0F00) >> 8] + chip8_rv[(opcode & 0x00F0) >> 4];
                     pc += 2;
                     break;
                 case 0x0005: //8XY5	VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+                    chip8_rv(0xF) =
+                        ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 1: 0;
+                    chip8_rv[(opcode & 0x00F0) >> 4] =
+                        (chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]);
                     pc += 2;
                     break;
                 case 0x0006: //8XY6	Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.[2]
+                    register_value = chip8_rv[(opcode & 0x0F00) >> 8];  
+                    if(register_value == 0xFF) {
+                        chip8_rv[0xF] = register_value;
+                    }
+                    chip8_rv[(opcode & 0x0F00) >> 8] = register_value >> 1;
                     pc += 2;
                     break;
                 case 0x0007: //8XY7	Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+                    chip8_rv(0xF) =
+                        ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 1: 0;
+                    chip8_rv[(opcode & 0x00F0) >> 4] =
+                        (chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]);
                     pc += 2;
                     break;
                 case 0x000E: //8XYE	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.[2]
+                    register_value = chip8_rv[(opcode & 0x0F00) >> 8];  
+                    if(register_value == 0xFF) {
+                        chip8_rv[0xF] = register_value;
+                    }
+                    chip8_rv[(opcode & 0x0F00) >> 8] = register_value << 1;
                     pc += 2;
                     break;
             }
@@ -266,12 +288,25 @@ function emulateCycle() {
                     pc += 2;
                     break;
                 case 0x0033: //FX33	Stores the Binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
+                    memory[I] = chip8_rv[(opcode & 0x0F00) >> 8] / 100;
+                    memory[I + 1] = (chip8_rv[(opcode & 0x0F00) >> 8] / 10) % 10;
+                    memory[I + 2] = (chip8_rv[(opcode & 0x0F00) >> 8] % 100) % 10;
                     pc += 2;
                     break;
-                case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.[4]
+                case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.
+                    reg = (opcode & 0x0F00) >> 8;
+                    for(var i = 0; i <= reg; i++) {
+                        memory[I + i] = chip8_rv[i];
+                        I += reg + 1;
+                    }
                     pc += 2;
                     break;
-                case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I.[4]                        
+                case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I 
+                    reg = (opcode & 0x0F00) >> 8;
+                    for(var i = 0; i <= reg; i++) {
+                        chip8_rv[i] = memory[I + i];
+                        I += reg + 1;
+                    }
                     pc += 2;
                     break;
             }
