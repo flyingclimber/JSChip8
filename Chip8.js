@@ -315,7 +315,7 @@ function emulateCycle() {
             }
             break;
         default:
-            console.log("Unknown opcode 0x" + opcode);
+            console.log("Unknown opcode 0x" + opcode.toString(16));
         } //END OPCODES
 
         if(delay_timer > 0)
