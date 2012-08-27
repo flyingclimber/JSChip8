@@ -273,6 +273,7 @@ function emulateCycle() {
                     }
                     break;
             }
+            break;
         case 0xF000:
             switch(opcode & 0x00FF) {
                 case 0x0007: //FX07	Sets VX to the value of the delay timer.
