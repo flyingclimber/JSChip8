@@ -28,6 +28,8 @@ chip8_fontset = [
 ];
 var rom;
 var gfx = new Array(64 * 32);
+var keypress = 0; // Current key press
+
 
 function main() {
     setupGraphics();
@@ -269,11 +271,9 @@ function emulateCycle() {
                     pc += 2;
                     break; 
                 case 0x000A: //FX0A	A key press is awaited, and then stored in VX.
-                    var input = 0;
-                    while(!input) {
-                        input = detectKey();
+                    while(keypress == 0) {
                     }
-                    chip8_rv[(opcode & 0x0F00) >> 8] = key;
+                    chip8_rv[(opcode & 0x0F00) >> 8] = keypress;
                     pc += 2;
                     break;
                 case 0x0015: //FX15	Sets the delay timer to VX.
@@ -367,62 +367,11 @@ function resetTimers() {
     sound_timer = 0;
 }
 
-function setKeys(evt) {
-    switch(evt.keyCode) {
-        case 49: // 1 ~ 1
-            key[1] = 1;
-            break;
-        case 50: // 2 ~ 2
-            key[2] = 1;
-            break;
-        case 51: // 3 ~ 3
-            key[3] = 1;
-            break;
-        case 52: // 4 ~ C
-            key[0xC] = 1;
-            break;
-        case 81: // q ~ 4
-            key[4] = 1;
-            break;
-        case 87: // w ~ 5
-            key[5] = 1;
-            break;
-        case 69: // e ~ 6
-            key[6] = 1;
-            break;
-        case 82: // r ~ D
-            key[0xD] = 1;
-            break;
-        case 65: // a ~ 7
-            key[7] = 1;
-            break;
-        case 83: // s ~ 8
-            key[8] = 1;
-            break;
-        case 68: // d ~ 9
-            key[9] = 1;
-            break;
-        case 70: // f ~ E
-            key[0xE] = 1;
-            break;
-        case 90: // z ~ A
-            key[0xA] = 1;
-            break;
-        case 88: // x ~ 0
-            key[0] = 1;
-            break;
-        case 67: // c ~ B
-            key[0xB] = 1;
-            break;
-        case 86: // v ~ F
-            key[0xF] = 1;
-            break;
-    }
+function setKeys() {
+    key[keypress] = 1;
 }
 
 function detectKey(evt) {
-    var keypress = 0;
-
     switch(evt.keyCode) {
         case 49: // 1 ~ 1
             keypress = 0x1;
@@ -473,7 +422,6 @@ function detectKey(evt) {
             keypress = 0xF;
             break;
     }
-    return keypress;
 }
 
 function drawGraphics() {
