@@ -165,7 +165,7 @@ function emulateCycle() {
         case 0x8000:
             switch(opcode & 0x000F) { //8XY0 Sets VX to the value of VY.
                 case 0x0000:
-                    chip8_rv[(opcode & 0x0F00) >> 8] = (opcode & 0x00F0) >> 4;
+                    chip8_rv[(opcode & 0x0F00) >> 8] = chip8_rv[(opcode & 0x00F0) >> 4];
                     pc += 2;
                     break;
                 case 0x0001: //8XY1  Sets VX to VX or VY.
