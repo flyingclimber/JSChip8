@@ -122,6 +122,7 @@ function emulateCycle() {
                 case 0x00EE: //00EE	Returns from a subroutine.
                     --sp;
                     pc = stack[sp];
+                    pc += 2;
                     break;
         }
         case 0x1000: //1NNN	Jumps to address NNN.
