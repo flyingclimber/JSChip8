@@ -123,11 +123,11 @@ function emulateCycle() {
                 case 0x00EE: //00EE	Returns from a subroutine.
                     --sp;
                     pc = stack[sp];
+                    pc += 2;
                     break;
-        }
+            }
+            break;
         case 0x1000: //1NNN	Jumps to address NNN.
-            stack[sp] = pc;
-            ++sp;
             pc = opcode & 0x0FFF;
             break;
         case 0x2000: //2NNN	Calls subroutine at NNN.
@@ -167,7 +167,7 @@ function emulateCycle() {
         case 0x8000:
             switch(opcode & 0x000F) { //8XY0 Sets VX to the value of VY.
                 case 0x0000:
-                    chip8_rv[(opcode & 0x0F00) >> 8] = (opcode & 0x00F0) >> 4;
+                    chip8_rv[(opcode & 0x0F00) >> 8] = chip8_rv[(opcode & 0x00F0) >> 4];
                     pc += 2;
                     break;
                 case 0x0001: //8XY1  Sets VX to VX or VY.
@@ -186,25 +186,22 @@ function emulateCycle() {
                     pc += 2;
                     break;
                 case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
-                    chip8_rv(0xF) = 
+                    chip8_rv[0xF] = 
                         ((chip8_rv[(opcode & 0x00F0) >> 4] + chip8_rv[opcode & 0x0F00 >> 8]) > 0xFF) ? 1 : 0;
                     chip8_rv[(opcode & 0x0F00)] = 
                         chip8_rv[(opcode & 0x0F00) >> 8] + chip8_rv[(opcode & 0x00F0) >> 4];
                     pc += 2;
                     break;
                 case 0x0005: //8XY5	VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-                    chip8_rv(0xF) =
+                    chip8_rv[0xF] =
                         ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 1: 0;
-                    chip8_rv[(opcode & 0x00F0) >> 4] =
-                        (chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]);
+                    chip8_rv[(opcode & 0x0F00) >> 8] =
+                        (chip8_rv[(opcode & 0x0F00) >> 8] - chip8_rv[(opcode & 0x00F0) >> 4]);
                     pc += 2;
                     break;
                 case 0x0006: //8XY6	Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.[2]
-                    register_value = chip8_rv[(opcode & 0x0F00) >> 8];  
-                    if(register_value == 0xFF) {
-                        chip8_rv[0xF] = register_value;
-                    }
-                    chip8_rv[(opcode & 0x0F00) >> 8] = register_value >> 1;
+                    chip8_rv[0xF] = chip8_rv[(opcode & 0x0F00) >> 8] & 0x1;
+                    chip8_rv[(opcode & 0x0F00) >> 8] >>= 1;
                     pc += 2;
                     break;
                 case 0x0007: //8XY7	Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
@@ -215,17 +212,14 @@ function emulateCycle() {
                     pc += 2;
                     break;
                 case 0x000E: //8XYE	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.[2]
-                    register_value = chip8_rv[(opcode & 0x0F00) >> 8];  
-                    if(register_value == 0xFF) {
-                        chip8_rv[0xF] = register_value;
-                    }
-                    chip8_rv[(opcode & 0x0F00) >> 8] = register_value << 1;
+                    chip8_rv[0xF] = chip8_rv[(opcode & 0x0F00) >> 8] >> 7;
+                    chip8_rv[(opcode & 0x0F00) >> 8] <<= 1;
                     pc += 2;
                     break;
             }
             break;
         case 0x9000: //9XY0	Skips the next instruction if VX doesn't equal VY.
-            if (chip8_rv[(opcode & 0x0F00) >> 8] == chip8_rv[opcode & 0x00F0] >> 4) {
+            if (chip8_rv[(opcode & 0x0F00) >> 8] != chip8_rv[opcode & 0x00F0] >> 4) {
                 pc += 4;
             } else {
                 pc += 2;
@@ -236,8 +230,6 @@ function emulateCycle() {
             pc += 2;
             break;
         case 0xB0000: //BNNN	Jumps to the address NNN plus V0.
-            stack[sp] = pc;
-            ++sp;
             pc = (opcode & 0x0FFF) + chip8_rv[0];
             break;
         case 0xC000: //CXNN	Sets VX to a random number and NN.
@@ -255,7 +247,7 @@ function emulateCycle() {
                 for( var xline = 0; xline < 8; xline++) {
                     if((pixel & (0x80 >> xline)) != 0 ) {
                         if(gfx[(x + xline + ((y + yline) * 64))] == 1)
-                            V[0xF] = 1;
+                            chip8_rv[0xF] = 1;
                         gfx[x + xline + ((y + yline) * 64)] ^= 1; 
                     }
                 }
@@ -321,16 +313,16 @@ function emulateCycle() {
                     reg = (opcode & 0x0F00) >> 8;
                     for(var i = 0; i <= reg; i++) {
                         memory[I + i] = chip8_rv[i];
-                        I += reg + 1;
                     }
+                    I += reg + 1;
                     pc += 2;
                     break;
                 case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I 
                     reg = (opcode & 0x0F00) >> 8;
                     for(var i = 0; i <= reg; i++) {
                         chip8_rv[i] = memory[I + i];
-                        I += reg + 1;
                     }
+                    I += reg + 1;
                     pc += 2;
                     break;
             }
