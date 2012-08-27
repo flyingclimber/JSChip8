@@ -8,6 +8,9 @@ var skip = 0;
 var pc = 0;
 var multiplier = 10;
 var chip8_fontset = new Array();
+var opcodes = 0; //Number of opcodes we've ran in a cycle
+var cpuCycleCount = 60; //Max number of opcodes done per second
+
 chip8_fontset = [
   0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
   0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -36,12 +39,26 @@ function main() {
     setupInput();
 
     initialize();
+
+    var timePrevious;
+    var timeCurrent;
+
     for (;;) {
-        emulateCycle();
-        if (this.drawFlag) {
-            drawGraphics();
+        if (opcodes <= cpuCycleCount) {
+            emulateCycle();
+            if (this.drawFlag) {
+                drawGraphics();
+            }
+            setKeys();
+            opcodes++;
+            timePrevious = new Date();
+        } else {
+            var timeCurrent = new Date();
+            if (timeCurrent.getSeconds() != timePrevious.getSeconds()) {
+                opcodes = 0;
+            
+            }
         }
-        setKeys();
     }
 }
 
