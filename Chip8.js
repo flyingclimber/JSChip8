@@ -88,7 +88,6 @@ function loadFile(evt) {
 }
 
 function emulateCycle() {
-    detectKeyPress();
 
     opcode = memory[pc] << 8 | memory[pc + 1];
 
@@ -270,6 +269,11 @@ function emulateCycle() {
                     pc += 2;
                     break; 
                 case 0x000A: //FX0A	A key press is awaited, and then stored in VX.
+                    var input = 0;
+                    while(!input) {
+                        input = detectKey();
+                    }
+                    chip8_rv[(opcode & 0x0F00) >> 8] = key;
                     pc += 2;
                     break;
                 case 0x0015: //FX15	Sets the delay timer to VX.
@@ -358,17 +362,118 @@ function clearMemory() {
     }
 }
 
-function detectKeyPress() {
-
-}
-
 function resetTimers() {
     delay_timer = 0;
     sound_timer = 0;
 }
 
-function setKeys() {
+function setKeys(evt) {
+    switch(evt.keyCode) {
+        case 49: // 1 ~ 1
+            key[1] = 1;
+            break;
+        case 50: // 2 ~ 2
+            key[2] = 1;
+            break;
+        case 51: // 3 ~ 3
+            key[3] = 1;
+            break;
+        case 52: // 4 ~ C
+            key[0xC] = 1;
+            break;
+        case 81: // q ~ 4
+            key[4] = 1;
+            break;
+        case 87: // w ~ 5
+            key[5] = 1;
+            break;
+        case 69: // e ~ 6
+            key[6] = 1;
+            break;
+        case 82: // r ~ D
+            key[0xD] = 1;
+            break;
+        case 65: // a ~ 7
+            key[7] = 1;
+            break;
+        case 83: // s ~ 8
+            key[8] = 1;
+            break;
+        case 68: // d ~ 9
+            key[9] = 1;
+            break;
+        case 70: // f ~ E
+            key[0xE] = 1;
+            break;
+        case 90: // z ~ A
+            key[0xA] = 1;
+            break;
+        case 88: // x ~ 0
+            key[0] = 1;
+            break;
+        case 67: // c ~ B
+            key[0xB] = 1;
+            break;
+        case 86: // v ~ F
+            key[0xF] = 1;
+            break;
+    }
+}
 
+function detectKey(evt) {
+    var keypress = 0;
+
+    switch(evt.keyCode) {
+        case 49: // 1 ~ 1
+            keypress = 1;
+            break;
+        case 50: // 2 ~ 2
+            keypress = 2;
+            break;
+        case 51: // 3 ~ 3
+            keypress = 3;
+            break;
+        case 52: // 4 ~ C
+            keypress = 0xC;
+            break;
+        case 81: // q ~ 4
+            keypress = 4;
+            break;
+        case 87: // w ~ 5
+            keypress = 5;
+            break;
+        case 69: // e ~ 6
+            keypress = 6;
+            break;
+        case 82: // r ~ D
+            keypress = 0xD;
+            break;
+        case 65: // a ~ 7
+            keypress = 7;
+            break;
+        case 83: // s ~ 8
+            keypress = 8;
+            break;
+        case 68: // d ~ 9
+            keypress = 9;
+            break;
+        case 70: // f ~ E
+            keypress = 0xE;
+            break;
+        case 90: // z ~ A
+            keypress = 0xA;
+            break;
+        case 88: // x ~ 0
+            keypress = 0;
+            break;
+        case 67: // c ~ B
+            keypress = 0xB;
+            break;
+        case 86: // v ~ F
+            keypress = 0xF;
+            break;
+    }
+    return keypress;
 }
 
 function drawGraphics() {
