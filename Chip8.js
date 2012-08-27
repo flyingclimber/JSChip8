@@ -78,7 +78,7 @@ function initialize() {
     I = 0;
     sp = 0;
 
-    clearDisplay();
+    clearScreen();
     clearStack();
     clearAllRegisters();
     clearMemory();
@@ -333,12 +333,6 @@ function emulateCycle() {
                 console.log("BEEP!\n");
             --sound_timer;
         }
-}
-
-function clearDisplay() {
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,150,150);
 }
 
 function clearScreen() {
