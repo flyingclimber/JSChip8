@@ -336,6 +336,10 @@ function emulateCycle() {
 }
 
 function clearScreen() {
+    for(var i = 0; i < gfx.length; i++) {
+        gfx[i] = 0;
+    }
+    
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0,0,64,32);
