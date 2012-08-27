@@ -125,8 +125,6 @@ function emulateCycle() {
                     break;
         }
         case 0x1000: //1NNN	Jumps to address NNN.
-            stack[sp] = pc;
-            ++sp;
             pc = opcode & 0x0FFF;
             break;
         case 0x2000: //2NNN	Calls subroutine at NNN.
@@ -235,8 +233,6 @@ function emulateCycle() {
             pc += 2;
             break;
         case 0xB0000: //BNNN	Jumps to the address NNN plus V0.
-            stack[sp] = pc;
-            ++sp;
             pc = (opcode & 0x0FFF) + chip8_rv[0];
             break;
         case 0xC000: //CXNN	Sets VX to a random number and NN.
