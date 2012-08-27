@@ -124,7 +124,8 @@ function emulateCycle() {
                     pc = stack[sp];
                     pc += 2;
                     break;
-        }
+            }
+            break;
         case 0x1000: //1NNN	Jumps to address NNN.
             pc = opcode & 0x0FFF;
             break;
