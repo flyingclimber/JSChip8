@@ -281,10 +281,10 @@ function emulateCycle() {
                     pc += 2;
                     break; 
                 case 0x000A: //FX0A	A key press is awaited, and then stored in VX.
-                    while(keypress == 0) {
+                    if (keypress != 0) {
+                        chip8_rv[(opcode & 0x0F00) >> 8] = keypress;
+                        pc += 2;
                     }
-                    chip8_rv[(opcode & 0x0F00) >> 8] = keypress;
-                    pc += 2;
                     break;
                 case 0x0015: //FX15	Sets the delay timer to VX.
                     delay_timer = chip8_rv[(opcode & 0x0F00) >> 8];
