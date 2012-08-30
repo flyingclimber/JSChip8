@@ -36,7 +36,6 @@ var keypress = 0; // Current key press
 
 function main() {
     setupGraphics();
-    setupInput();
 
     initialize();
 
@@ -70,10 +69,6 @@ function setupGraphics() {
     ctx.fillStyle = "rgb(1,0,0)";
     ctx.scale(multiplier,multiplier);
     ctx.fillRect (0, 0, 64, 32);
-}
-
-function setupInput() {
- //listen
 }
 
 function initialize() {
