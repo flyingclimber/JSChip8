@@ -43,7 +43,10 @@ function main() {
     var timePrevious;
     var timeCurrent;
 
-    for (;;) {
+    setInterval(function() { chip8Cycle() }, 1000 / 450);
+}
+
+function chip8Cycle() {
         if (opcodes <= cpuCycleCount) {
             emulateCycle();
             if (this.drawFlag) {
@@ -59,7 +62,6 @@ function main() {
             
             }
         }
-    }
 }
 
 function setupGraphics() {
@@ -119,6 +121,7 @@ function emulateCycle() {
                 case 0x00E0: //00E0	Clears the screen.
                     clearScreen();
                     pc += 2;
+                    drawFlag = true;
                     break;
                 case 0x00EE: //00EE	Returns from a subroutine.
                     --sp;
@@ -343,10 +346,6 @@ function clearScreen() {
     for(var i = 0; i < gfx.length; i++) {
         gfx[i] = 0;
     }
-    
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,64,32);
 }
 
 function clearStack() {
