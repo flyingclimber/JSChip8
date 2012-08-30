@@ -41,7 +41,10 @@ function main() {
     var timePrevious;
     var timeCurrent;
 
-    for (;;) {
+    setInterval(function() { chip8Cycle() }, 1000 / 450);
+}
+
+function chip8Cycle() {
         if (opcodes <= cpuCycleCount) {
             emulateCycle();
             if (this.drawFlag) {
@@ -57,7 +60,6 @@ function main() {
             
             }
         }
-    }
 }
 
 function setupGraphics() {
