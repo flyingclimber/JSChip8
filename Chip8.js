@@ -127,6 +127,8 @@ function emulateCycle() {
                     pc = stack[sp];
                     pc += 2;
                     break;
+                default:
+                    console.log("Unknown opcode 0x" + opcode.toString(16));
             }
             break;
         case 0x1000: //1NNN	Jumps to address NNN.
@@ -215,6 +217,8 @@ function emulateCycle() {
                     chip8_rv[(opcode & 0x0F00) >> 8] <<= 1;
                     pc += 2;
                     break;
+                default:
+                    console.log("Unknown opcode 0x" + opcode.toString(16));
             }
             break;
         case 0x9000: //9XY0	Skips the next instruction if VX doesn't equal VY.
