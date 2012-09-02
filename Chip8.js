@@ -220,7 +220,7 @@ function emulateCycle() {
             pc = (opcode & 0x0FFF) + chip8_rv[0];
             break;
         case 0xC000: //CXNN	Sets VX to a random number and NN.
-            chip8_rv[(opcode & 0x0F00) >> 8] = Math.floor((Math.random()*255)+1) & (opcode && 0x00FF);
+            chip8_rv[(opcode & 0x0F00) >> 8] = Math.floor((Math.random()*255)+1) & (opcode & 0x00FF);
             pc += 2;
             break;
         case 0xD000: //DXYN	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.
