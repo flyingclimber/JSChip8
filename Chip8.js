@@ -188,7 +188,7 @@ function emulateCycle() {
                     break;
                 case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
                     chip8_rv[0xF] = 
-                        ((chip8_rv[(opcode & 0x00F0) >> 4] + chip8_rv[opcode & 0x0F00 >> 8]) > 0xFF) ? 1 : 0;
+                        ((chip8_rv[(opcode & 0x00F0) >> 4] + chip8_rv[(opcode & 0x0F00) >> 8]) > 0xFF) ? 1 : 0;
                     chip8_rv[(opcode & 0x0F00)] = 
                         chip8_rv[(opcode & 0x0F00) >> 8] + chip8_rv[(opcode & 0x00F0) >> 4];
                     pc += 2;
@@ -262,14 +262,14 @@ function emulateCycle() {
         case 0xE000:
             switch(opcode & 0x000F) {
                 case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
-                    if ( key[chip8_rv[opcode & 0x0F00] >> 8] != 0) {
+                    if ( key[chip8_rv[(opcode & 0x0F00) >> 8]] != 0) {
                         pc +=4;
                     } else {
                         pc += 2;
                     }
                     break;
                 case 0x0001: //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-                    if ( ! key[chip8_rv[opcode & 0x0F00] >> 8] == 0) {
+                    if ( ! key[chip8_rv[(opcode & 0x0F00) >> 8]] == 0) {
                         pc += 4;
                     } else {
                         pc += 2;
