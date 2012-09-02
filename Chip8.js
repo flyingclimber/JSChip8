@@ -140,25 +140,13 @@ function emulateCycle() {
             pc = opcode & 0x0FFF;
             break;
         case 0x3000: //3XNN	Skips the next instruction if VX equals NN.
-            if (chip8_rv[(opcode & 0x0F00) >> 8] == ( opcode & 0x00FF ) ) {
-                pc += 4;
-            } else {
-                pc += 2;
-            }
+            pc += ( chip8_rv[(opcode & 0x0F00) >> 8] == ( opcode & 0x00FF ) ) ? 4 : 2;
             break;
         case 0x4000: //4XNN	Skips the next instruction if VX doesn't equal NN.
-            if (chip8_rv[(opcode & 0x0F00) >> 8] != ( opcode & 0x00FF ) ) {
-                pc += 4;  
-            } else {
-                pc += 2;
-            }
+            pc += ( chip8_rv[(opcode & 0x0F00) >> 8] != ( opcode & 0x00FF ) ) ? 4 : 2;
             break;
         case 0x5000: //5XY0	Skips the next instruction if VX equals VY. 
-            if (chip8_rv[(opcode & 0x0F00) >> 8] == chip8_rv[(opcode & 0x00F0) >> 4]) {
-                pc += 4;
-            } else {
-                pc += 2;
-            }
+            pc += ( chip8_rv[(opcode & 0x0F00) >> 8] == chip8_rv[(opcode & 0x00F0) >> 4] ) ? 4 : 2;
             break;
         case 0x6000: //6XNN	Sets VX to NN.
             chip8_rv[(opcode & 0x0F00) >> 8] = (opcode & 0x00FF);
@@ -222,11 +210,7 @@ function emulateCycle() {
             }
             break;
         case 0x9000: //9XY0	Skips the next instruction if VX doesn't equal VY.
-            if (chip8_rv[(opcode & 0x0F00) >> 8] != chip8_rv[opcode & 0x00F0] >> 4) {
-                pc += 4;
-            } else {
-                pc += 2;
-            }
+            pc += ( chip8_rv[(opcode & 0x0F00) >> 8] != chip8_rv[(opcode & 0x00F0) >> 4] ) ? 4 : 2;
             break;
         case 0xA000: //ANNN	Sets I to the address NNN.
             I = opcode & 0x0FFF;
@@ -262,18 +246,10 @@ function emulateCycle() {
         case 0xE000:
             switch(opcode & 0x000F) {
                 case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
-                    if ( key[chip8_rv[(opcode & 0x0F00) >> 8]] != 0) {
-                        pc +=4;
-                    } else {
-                        pc += 2;
-                    }
+                    pc += ( key[chip8_rv[(opcode & 0x0F00) >> 8]] == 1 ) ? 4 : 2;
                     break;
                 case 0x0001: //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-                    if ( ! key[chip8_rv[(opcode & 0x0F00) >> 8]] == 0) {
-                        pc += 4;
-                    } else {
-                        pc += 2;
-                    }
+                    pc += ( key[chip8_rv[(opcode & 0x0F00) >> 8]] != 0 ) ? 4 : 2;
                     break;
             }
             break;
