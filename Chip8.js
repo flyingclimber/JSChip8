@@ -8,8 +8,6 @@ var skip = 0;
 var pc = 0;
 var multiplier = 10;
 var chip8_fontset = new Array();
-var opcodes = 0; //Number of opcodes we've ran in a cycle
-var cpuCycleCount = 60; //Max number of opcodes done per second
 
 chip8_fontset = [
   0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -43,24 +41,27 @@ function main() {
     var timeCurrent;
 
     setInterval(function() { chip8Cycle() }, 1000 / 450);
+    setInterval(function() { updateTimers() }, 1000 / 18.2);
 }
 
 function chip8Cycle() {
-        if (opcodes <= cpuCycleCount) {
-            emulateCycle();
-            if (this.drawFlag) {
-                drawGraphics();
-            }
-            setKeys();
-            opcodes++;
-            timePrevious = new Date();
-        } else {
-            var timeCurrent = new Date();
-            if (timeCurrent.getSeconds() != timePrevious.getSeconds()) {
-                opcodes = 0;
-            
-            }
+    emulateCycle();
+    if (this.drawFlag) {
+        drawGraphics();
+    }
+    setKeys();
+}
+
+function updateTimers() {
+    if(delay_timer > 0) {
+        --delay_timer;
+    }
+    if(sound_timer > 0) {
+        if(sound_timer == 1) {
+            console.log("BEEP!\n");
         }
+        --sound_timer;
+    }
 }
 
 function setupGraphics() {
@@ -173,13 +174,12 @@ function emulateCycle() {
                 case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
                     chip8_rv[0xF] = 
                         ((chip8_rv[(opcode & 0x00F0) >> 4] + chip8_rv[(opcode & 0x0F00) >> 8]) > 0xFF) ? 1 : 0;
-                    chip8_rv[(opcode & 0x0F00)] = 
-                        chip8_rv[(opcode & 0x0F00) >> 8] + chip8_rv[(opcode & 0x00F0) >> 4];
+                    chip8_rv[(opcode & 0x0F00) >> 8] += chip8_rv[(opcode & 0x00F0) >> 4];
                     pc += 2;
                     break;
                 case 0x0005: //8XY5	VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                     chip8_rv[0xF] =
-                        ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 1: 0;
+                        ((chip8_rv[(opcode & 0x0F00) >> 8] - chip8_rv[(opcode & 0x00F0) >> 4]) < 0) ? 0 : 1;
                     chip8_rv[(opcode & 0x0F00) >> 8] =
                         (chip8_rv[(opcode & 0x0F00) >> 8] - chip8_rv[(opcode & 0x00F0) >> 4]);
                     pc += 2;
@@ -191,7 +191,7 @@ function emulateCycle() {
                     break;
                 case 0x0007: //8XY7	Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                     chip8_rv[0xF] =
-                        ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 1: 0;
+                        ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 0: 1;
                     chip8_rv[(opcode & 0x0F00) >> 8] =
                         (chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]);
                     pc += 2;
@@ -212,7 +212,7 @@ function emulateCycle() {
             I = opcode & 0x0FFF;
             pc += 2;
             break;
-        case 0xB0000: //BNNN	Jumps to the address NNN plus V0.
+        case 0xB000: //BNNN	Jumps to the address NNN plus V0.
             pc = (opcode & 0x0FFF) + chip8_rv[0];
             break;
         case 0xC000: //CXNN	Sets VX to a random number and NN.
@@ -242,10 +242,10 @@ function emulateCycle() {
         case 0xE000:
             switch(opcode & 0x000F) {
                 case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
-                    pc += ( key[chip8_rv[(opcode & 0x0F00) >> 8]] == 1 ) ? 4 : 2;
+                    pc += ( key[parseInt(chip8_rv[(opcode & 0x0F00) >> 8], 16)] == 1 ) ? 4: 2;
                     break;
                 case 0x0001: //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-                    pc += ( key[chip8_rv[(opcode & 0x0F00) >> 8]] == 0 ) ? 4 : 2;
+                    pc += ( key[parseInt(chip8_rv[(opcode & 0x0F00) >> 8], 16)] == 0 ) ? 4 : 2;
                     break;
             }
             break;
@@ -307,15 +307,7 @@ function emulateCycle() {
             console.log("Unknown opcode 0x" + opcode.toString(16));
         } //END OPCODES
 
-        if(delay_timer > 0)
-            --delay_timer;
-        
-        if(sound_timer > 0) {
-            if(sound_timer == 1)
-                console.log("BEEP!\n");
-            --sound_timer;
-        }
-}
+      }
 
 function clearScreen() {
     for(var i = 0; i < gfx.length; i++) {
@@ -411,8 +403,10 @@ function drawGraphics() {
             if(gfx[(64 * y) + x]) {
                 ctx.fillStyle = "rgb(200,0,0)";
                 ctx.fillRect(x,y,1,1);
+            } else {
+                ctx.fillStyle = "rgb(1,0,0)";
+                ctx.fillRect(x,y,1,1);
             }
-
         }
     }
     drawFlag = false;
