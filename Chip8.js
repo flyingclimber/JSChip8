@@ -42,6 +42,7 @@ function main() {
     var timeCurrent;
 
     setInterval(function() { chip8Cycle() }, 1000 / 450);
+    setInterval(function() { updateTimers() }, 1000 / 18.2);
 }
 
 function chip8Cycle() {
@@ -60,6 +61,18 @@ function chip8Cycle() {
             
             }
         }
+}
+
+function updateTimers() {
+    if(delay_timer > 0) {
+        --delay_timer;
+    }
+    if(sound_timer > 0) {
+        if(sound_timer == 1) {
+            console.log("BEEP!\n");
+        }
+        --sound_timer;
+    }
 }
 
 function setupGraphics() {
@@ -308,15 +321,7 @@ function emulateCycle() {
             console.log("Unknown opcode 0x" + opcode.toString(16));
         } //END OPCODES
 
-        if(delay_timer > 0)
-            --delay_timer;
-        
-        if(sound_timer > 0) {
-            if(sound_timer == 1)
-                console.log("BEEP!\n");
-            --sound_timer;
-        }
-}
+      }
 
 function clearScreen() {
     for(var i = 0; i < gfx.length; i++) {
