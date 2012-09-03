@@ -367,8 +367,10 @@ function drawGraphics() {
             if(gfx[(64 * y) + x]) {
                 ctx.fillStyle = "rgb(200,0,0)";
                 ctx.fillRect(x,y,1,1);
+            } else {
+                ctx.fillStyle = "rgb(1,0,0)";
+                ctx.fillRect(x,y,1,1);
             }
-
         }
     }
     drawFlag = false;
