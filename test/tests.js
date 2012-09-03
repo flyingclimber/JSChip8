@@ -194,6 +194,7 @@ test("0x8XY5", function() {
     chip8_rv[2] = 32;
     emulateCycle();
     equal(chip8_rv[1], 2,"Subtract VY from VX");
+    equal(chip8_rv[0xF], 1, "Set lack of borrow");
     equal(pc,2,"Increment pc");
 });
 test("0x8XY5 with borrow", function() {
@@ -206,7 +207,7 @@ test("0x8XY5 with borrow", function() {
     chip8_rv[2] = 34;
     emulateCycle();
     equal(chip8_rv[1], -2,"Subtract VY from VX");
-    equal(chip8_rv[0xF], 1, "Set carry bit");
+    equal(chip8_rv[0xF], 0, "Set borrow bit");
     equal(pc,2,"Increment pc");
 });
 test("0x8XY6", function() {

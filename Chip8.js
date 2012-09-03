@@ -195,7 +195,7 @@ function emulateCycle() {
                     break;
                 case 0x0005: //8XY5	VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                     chip8_rv[0xF] =
-                        ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 1: 0;
+                        ((chip8_rv[(opcode & 0x0F00) >> 8] - chip8_rv[(opcode & 0x00F0) >> 4]) < 0) ? 0 : 1;
                     chip8_rv[(opcode & 0x0F00) >> 8] =
                         (chip8_rv[(opcode & 0x0F00) >> 8] - chip8_rv[(opcode & 0x00F0) >> 4]);
                     pc += 2;
@@ -207,7 +207,7 @@ function emulateCycle() {
                     break;
                 case 0x0007: //8XY7	Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                     chip8_rv[0xF] =
-                        ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 1: 0;
+                        ((chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]) < 0) ? 0: 1;
                     chip8_rv[(opcode & 0x0F00) >> 8] =
                         (chip8_rv[(opcode & 0x00F0) >> 4] - chip8_rv[(opcode & 0x0F00) >> 8]);
                     pc += 2;
