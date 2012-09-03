@@ -229,7 +229,7 @@ function emulateCycle() {
             I = opcode & 0x0FFF;
             pc += 2;
             break;
-        case 0xB0000: //BNNN	Jumps to the address NNN plus V0.
+        case 0xB000: //BNNN	Jumps to the address NNN plus V0.
             pc = (opcode & 0x0FFF) + chip8_rv[0];
             break;
         case 0xC000: //CXNN	Sets VX to a random number and NN.
