@@ -246,10 +246,10 @@ function emulateCycle() {
         case 0xE000:
             switch(opcode & 0x000F) {
                 case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
-                    pc += ( key[chip8_rv[(opcode & 0x0F00) >> 8]] == 1 ) ? 4 : 2;
+                    pc += ( key[parseInt(chip8_rv[(opcode & 0x0F00) >> 8], 16)] == 1 ) ? 4: 2;
                     break;
                 case 0x0001: //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-                    pc += ( key[chip8_rv[(opcode & 0x0F00) >> 8]] == 0 ) ? 4 : 2;
+                    pc += ( key[parseInt(chip8_rv[(opcode & 0x0F00) >> 8], 16)] == 0 ) ? 4 : 2;
                     break;
             }
             break;
