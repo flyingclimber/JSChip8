@@ -4,7 +4,6 @@ chip8_rv = new Array();
 var key = new Array();
 var stack = new Array();
 var memory = new Array();
-var skip = 0;
 var pc = 0;
 var multiplier = 10;
 var chip8_fontset = new Array();
@@ -49,7 +48,6 @@ function chip8Cycle() {
     if (this.drawFlag) {
         drawGraphics();
     }
-    setKeys();
 }
 
 function updateTimers() {
@@ -342,7 +340,7 @@ function setKeys() {
     key[keypress] = 1;
 }
 
-function detectKey(evt) {
+function keyDown(evt) {
     switch(evt.keyCode) {
         case 49: // 1 ~ 1
             keypress = 0x1;
@@ -393,7 +391,62 @@ function detectKey(evt) {
             keypress = 0xF;
             break;
     }
+    key[keypress] = 1;
 }
+function keyUp(evt) {
+    switch(evt.keyCode) {
+        case 49: // 1 ~ 1
+            keypress = 0x1;
+            break;
+        case 50: // 2 ~ 2
+            keypress = 0x2;
+            break;
+        case 51: // 3 ~ 3
+            keypress = 0x3;
+            break;
+        case 52: // 4 ~ C
+            keypress = 0xC;
+            break;
+        case 81: // q ~ 4
+            keypress = 0x4;
+            break;
+        case 87: // w ~ 5
+            keypress = 0x5;
+            break;
+        case 69: // e ~ 6
+            keypress = 0x6;
+            break;
+        case 82: // r ~ D
+            keypress = 0xD;
+            break;
+        case 65: // a ~ 7
+            keypress = 0x7;
+            break;
+        case 83: // s ~ 8
+            keypress = 0x8;
+            break;
+        case 68: // d ~ 9
+            keypress = 0x9;
+            break;
+        case 70: // f ~ E
+            keypress = 0xE;
+            break;
+        case 90: // z ~ A
+            keypress = 0xA;
+            break;
+        case 88: // x ~ 0
+            keypress = 0x0;
+            break;
+        case 67: // c ~ B
+            keypress = 0xB;
+            break;
+        case 86: // v ~ F
+            keypress = 0xF;
+            break;
+    }
+    key[keypress] = 0;
+}
+
 
 function drawGraphics() {
     var canvas = document.getElementById('canvas');
