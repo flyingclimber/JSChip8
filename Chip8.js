@@ -18,8 +18,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-//MEMORY 4k
-//Registers
 chip8_rv = new Array();
 var key = new Array();
 var stack = new Array();
@@ -126,7 +124,6 @@ function emulateCycle() {
     //BEGIN OP CODES
     switch(opcode & 0xF000) {
         //All opcodes from http://en.wikipedia.org/wiki/CHIP-8
-        //0NNN  Calls RCA 1802 program at address NNN.
         case 0x0000:
             switch(opcode & 0x00FF) {
                 case 0x00E0: //00E0	Clears the screen.
