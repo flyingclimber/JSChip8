@@ -96,11 +96,11 @@ function initialize() {
     clearAllRegisters();
     clearMemory();
     
-    for (var i = 0; i < 80; i++) { // Load font set
+    for (i = 0; i < 80; i++) { // Load font set
         memory[i] = chip8Fontset[i];
     }
 
-    for (var i = 0; i < ROM.length; i++ ) { // Load ROM
+    for (i = 0; i < ROM.length; i++ ) { // Load ROM
         memory[i + 512] = ROM.charCodeAt(i);
     }
 
@@ -308,7 +308,7 @@ function emulateCycle() {
                     break;
                 case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I 
                     reg = (opcode & 0x0F00) >> 8;
-                    for (var i = 0; i <= reg; i++) {
+                    for (i = 0; i <= reg; i++) {
                         chip8RV[i] = memory[I + i];
                     }
                     I += reg + 1;
