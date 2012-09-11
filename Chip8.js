@@ -18,13 +18,13 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-chip8_rv = new Array();
-var key = new Array();
-var stack = new Array();
-var memory = new Array();
+var chip8_rv = [];
+var key = [];
+var stack = [];
+var memory = [];
 var pc = 0;
 var multiplier = 10;
-var chip8_fontset = new Array();
+var chip8_fontset = [];
 
 chip8_fontset = [
   0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
