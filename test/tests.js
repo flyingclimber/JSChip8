@@ -14,11 +14,11 @@ test("clearStack()", function() {
     equal(stack[2], 0, "Clear the stack after setting it");
 });
 test("resetTimers()", function() {
-    sound_timer = 2;
-    delay_timer = 2;
+    soundTimer = 2;
+    delayTimer = 2;
     resetTimers();
-    equal(sound_timer, 0, "Reset sound timer after setting it");
-    equal(delay_timer, 0, "Reset delay timer after setting it");
+    equal(soundTimer, 0, "Reset sound timer after setting it");
+    equal(delayTimer, 0, "Reset delay timer after setting it");
 });
 test("0x00E0", function() {
     pc = 0;
@@ -339,7 +339,7 @@ test("0xFX07", function() {
     memory[0] = '0xF1';
     memory[1] = '0x07';
     clearAllRegisters();
-    delay_timer = 50;
+    delayTimer = 50;
     emulateCycle();
     equal(chip8_rv[1], 50, "Set VX to delay timer");
     equal(pc,2,"Increment pc");
@@ -352,10 +352,10 @@ test("0xFX15", function() {
     memory[0] = '0xF1';
     memory[1] = '0x15';
     clearAllRegisters();
-    delay_timer = 0;
+    delayTimer = 0;
     chip8_rv[1] = 25;
     emulateCycle();
-    equal(delay_timer,25, "Set delay timer to VX");
+    equal(delayTimer,25, "Set delay timer to VX");
     equal(pc,2,"Increment pc");
 });
 
@@ -365,10 +365,10 @@ test("0xFX18", function() {
     memory[0] = '0xF1';
     memory[1] = '0x18';
     clearAllRegisters();
-    sound_timer = 0;
+    soundTimer = 0;
     chip8_rv[1] = 25;
     emulateCycle();
-    equal(sound_timer,25, "Set sound timer to VX");
+    equal(soundTimer,25, "Set sound timer to VX");
     equal(pc,2,"Increment pc");
 });
 
