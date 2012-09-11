@@ -241,8 +241,9 @@ function emulateCycle() {
                 pixel = memory[I + yline];
                 for ( var xline = 0; xline < 8; xline++) {
                     if ((pixel & (0x80 >> xline)) !== 0 ) {
-                        if (gfx[(x + xline + ((y + yline) * 64))] === 1)
+                        if (gfx[(x + xline + ((y + yline) * 64))] === 1) {
                             chip8RV[0xF] = 1;
+                        }
                         gfx[x + xline + ((y + yline) * 64)] ^= 1; 
                     }
                 }
