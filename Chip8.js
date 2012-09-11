@@ -113,7 +113,7 @@ function loadFile(evt) {
     var binaryHandle = new FileReader();
     binaryHandle.onload = function () {
         ROM = binaryHandle.result;
-    }
+    };
     binaryHandle.readAsBinaryString(files[0]);
 }
 
