@@ -54,8 +54,8 @@ function main() {
 
     initialize();
 
-    setInterval(function() { chip8Cycle() }, 1000 / 450);
-    setInterval(function() { updateTimers() }, 1000 / 18.2);
+    setInterval(function () { chip8Cycle(); }, 1000 / 450);
+    setInterval(function () { updateTimers(); }, 1000 / 18.2);
 }
 
 function chip8Cycle() {
