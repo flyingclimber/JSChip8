@@ -96,11 +96,11 @@ function initialize() {
     clearAllRegisters();
     clearMemory();
     
-    for(var i = 0; i < 80; i++) { // Load font set
+    for (var i = 0; i < 80; i++) { // Load font set
         memory[i] = chip8Fontset[i];
     }
 
-    for(var i = 0; i < ROM.length; i++ ) { // Load ROM
+    for (var i = 0; i < ROM.length; i++ ) { // Load ROM
         memory[i + 512] = ROM.charCodeAt(i);
     }
 
@@ -239,7 +239,7 @@ function emulateCycle() {
             chip8RV[0xF] = 0;
             for (var yline = 0; yline < h; yline++) {
                 pixel = memory[I + yline];
-                for( var xline = 0; xline < 8; xline++) {
+                for ( var xline = 0; xline < 8; xline++) {
                     if ((pixel & (0x80 >> xline)) != 0 ) {
                         if (gfx[(x + xline + ((y + yline) * 64))] == 1)
                             chip8RV[0xF] = 1;
@@ -299,7 +299,7 @@ function emulateCycle() {
                     break;
                 case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.
                     reg = (opcode & 0x0F00) >> 8;
-                    for(var i = 0; i <= reg; i++) {
+                    for (var i = 0; i <= reg; i++) {
                         memory[I + i] = chip8RV[i];
                     }
                     I += reg + 1;
@@ -307,7 +307,7 @@ function emulateCycle() {
                     break;
                 case 0x0065: //FX65	Fills V0 to VX with values from memory starting at address I 
                     reg = (opcode & 0x0F00) >> 8;
-                    for(var i = 0; i <= reg; i++) {
+                    for (var i = 0; i <= reg; i++) {
                         chip8RV[i] = memory[I + i];
                     }
                     I += reg + 1;
@@ -322,25 +322,25 @@ function emulateCycle() {
       }
 
 function clearScreen() {
-    for(var i = 0; i < gfx.length; i++) {
+    for (var i = 0; i < gfx.length; i++) {
         gfx[i] = 0;
     }
 }
 
 function clearStack() {
-    for(i = 0; i < 16; i++) {
+    for (i = 0; i < 16; i++) {
         stack[i] = 0;
     }
 }
 
 function clearAllRegisters() {
-    for(i = 0; i < 16; i++) {
+    for (i = 0; i < 16; i++) {
         chip8RV[i] = 0;
     }
 }
 
 function clearMemory() {
-    for(i = 0; i < 4096; i++) {
+    for (i = 0; i < 4096; i++) {
         memory[i] = 0;
     }
 }
@@ -465,8 +465,8 @@ function keyUp(evt) {
 function drawGraphics() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
-    for(y = 0; y < 32; y++) {
-        for(x = 0; x < 64; x++) {
+    for (y = 0; y < 32; y++) {
+        for (x = 0; x < 64; x++) {
             if (gfx[(64 * y) + x]) {
                 ctx.fillStyle = "rgb(200,0,0)";
                 ctx.fillRect(x,y,1,1);
