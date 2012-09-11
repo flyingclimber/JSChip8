@@ -56,9 +56,6 @@ function main() {
 
     initialize();
 
-    var timePrevious;
-    var timeCurrent;
-
     setInterval(function() { chip8Cycle() }, 1000 / 450);
     setInterval(function() { updateTimers() }, 1000 / 18.2);
 }
