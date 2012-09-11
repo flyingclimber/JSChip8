@@ -66,11 +66,11 @@ function chip8Cycle() {
 }
 
 function updateTimers() {
-    if(delayTimer > 0) {
+    if (delayTimer > 0) {
         delayTimer--;
     }
-    if(soundTimer > 0) {
-        if(soundTimer == 1) {
+    if (soundTimer > 0) {
+        if (soundTimer == 1) {
             console.log("BEEP!\n");
         }
         soundTimer--;
@@ -240,8 +240,8 @@ function emulateCycle() {
             for (var yline = 0; yline < h; yline++) {
                 pixel = memory[I + yline];
                 for( var xline = 0; xline < 8; xline++) {
-                    if((pixel & (0x80 >> xline)) != 0 ) {
-                        if(gfx[(x + xline + ((y + yline) * 64))] == 1)
+                    if ((pixel & (0x80 >> xline)) != 0 ) {
+                        if (gfx[(x + xline + ((y + yline) * 64))] == 1)
                             chip8RV[0xF] = 1;
                         gfx[x + xline + ((y + yline) * 64)] ^= 1; 
                     }
@@ -467,7 +467,7 @@ function drawGraphics() {
     var ctx = canvas.getContext('2d');
     for(y = 0; y < 32; y++) {
         for(x = 0; x < 64; x++) {
-            if(gfx[(64 * y) + x]) {
+            if (gfx[(64 * y) + x]) {
                 ctx.fillStyle = "rgb(200,0,0)";
                 ctx.fillRect(x,y,1,1);
             } else {
