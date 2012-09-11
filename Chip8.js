@@ -70,7 +70,7 @@ function updateTimers() {
         delayTimer--;
     }
     if (soundTimer > 0) {
-        if (soundTimer == 1) {
+        if (soundTimer === 1) {
             console.log("BEEP!\n");
         }
         soundTimer--;
@@ -149,13 +149,13 @@ function emulateCycle() {
             pc = opcode & 0x0FFF;
             break;
         case 0x3000: //3XNN	Skips the next instruction if VX equals NN.
-            pc += ( chip8RV[(opcode & 0x0F00) >> 8] == ( opcode & 0x00FF ) ) ? 4 : 2;
+            pc += ( chip8RV[(opcode & 0x0F00) >> 8] === ( opcode & 0x00FF ) ) ? 4 : 2;
             break;
         case 0x4000: //4XNN	Skips the next instruction if VX doesn't equal NN.
-            pc += ( chip8RV[(opcode & 0x0F00) >> 8] != ( opcode & 0x00FF ) ) ? 4 : 2;
+            pc += ( chip8RV[(opcode & 0x0F00) >> 8] !== ( opcode & 0x00FF ) ) ? 4 : 2;
             break;
         case 0x5000: //5XY0	Skips the next instruction if VX equals VY. 
-            pc += ( chip8RV[(opcode & 0x0F00) >> 8] == chip8RV[(opcode & 0x00F0) >> 4] ) ? 4 : 2;
+            pc += ( chip8RV[(opcode & 0x0F00) >> 8] === chip8RV[(opcode & 0x00F0) >> 4] ) ? 4 : 2;
             break;
         case 0x6000: //6XNN	Sets VX to NN.
             chip8RV[(opcode & 0x0F00) >> 8] = (opcode & 0x00FF);
@@ -218,7 +218,7 @@ function emulateCycle() {
             }
             break;
         case 0x9000: //9XY0	Skips the next instruction if VX doesn't equal VY.
-            pc += ( chip8RV[(opcode & 0x0F00) >> 8] != chip8RV[(opcode & 0x00F0) >> 4] ) ? 4 : 2;
+            pc += ( chip8RV[(opcode & 0x0F00) >> 8] !== chip8RV[(opcode & 0x00F0) >> 4] ) ? 4 : 2;
             break;
         case 0xA000: //ANNN	Sets I to the address NNN.
             I = opcode & 0x0FFF;
@@ -240,8 +240,8 @@ function emulateCycle() {
             for (var yline = 0; yline < h; yline++) {
                 pixel = memory[I + yline];
                 for ( var xline = 0; xline < 8; xline++) {
-                    if ((pixel & (0x80 >> xline)) != 0 ) {
-                        if (gfx[(x + xline + ((y + yline) * 64))] == 1)
+                    if ((pixel & (0x80 >> xline)) !== 0 ) {
+                        if (gfx[(x + xline + ((y + yline) * 64))] === 1)
                             chip8RV[0xF] = 1;
                         gfx[x + xline + ((y + yline) * 64)] ^= 1; 
                     }
