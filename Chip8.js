@@ -49,6 +49,16 @@ var gfx = new Array(64 * 32);
 var keypress = 0; // Current key press
 
 
+function loadFile(evt) {
+    var files = evt.target.files;
+
+    var binaryHandle = new FileReader();
+    binaryHandle.onload = function () {
+        ROM = binaryHandle.result;
+    };
+    binaryHandle.readAsBinaryString(files[0]);
+}
+
 function main() {
     setupGraphics();
 
@@ -77,14 +87,6 @@ function updateTimers() {
     }
 }
 
-function setupGraphics() {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.fillStyle = "rgb(1,0,0)";
-    ctx.scale(multiplier,multiplier);
-    ctx.fillRect (0, 0, 64, 32);
-}
-
 function initialize() {
     pc = 0x200;
     opcode = 0;
@@ -105,16 +107,6 @@ function initialize() {
     }
 
     clearTimers();
-}
-
-function loadFile(evt) {
-    var files = evt.target.files;
-
-    var binaryHandle = new FileReader();
-    binaryHandle.onload = function () {
-        ROM = binaryHandle.result;
-    };
-    binaryHandle.readAsBinaryString(files[0]);
 }
 
 function emulateCycle() {
@@ -411,6 +403,14 @@ function setKey(evt,state) {
             break;
     }
     key[keypress] = state;
+}
+
+function setupGraphics() {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "rgb(1,0,0)";
+    ctx.scale(multiplier,multiplier);
+    ctx.fillRect (0, 0, 64, 32);
 }
 
 function drawGraphics() {
