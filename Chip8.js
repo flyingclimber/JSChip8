@@ -68,25 +68,6 @@ function main() {
     setInterval(function () { updateTimers(); }, 1000 / 18.2);
 }
 
-function chip8Cycle() {
-    emulateCycle();
-    if (this.drawFlag) {
-        updateGraphics();
-    }
-}
-
-function updateTimers() {
-    if (delayTimer > 0) {
-        delayTimer--;
-    }
-    if (soundTimer > 0) {
-        if (soundTimer === 1) {
-            console.log("BEEP!\n");
-        }
-        soundTimer--;
-    }
-}
-
 function initialize() {
     pc = 0x200;
     opcode = 0;
@@ -107,6 +88,13 @@ function initialize() {
     }
 
     clearTimers();
+}
+
+function chip8Cycle() {
+    emulateCycle();
+    if (this.drawFlag) {
+        updateGraphics();
+    }
 }
 
 function emulateCycle() {
@@ -317,6 +305,18 @@ function emulateCycle() {
 function clearScreen() {
     for (i = 0; i < gfx.length; i++) {
         gfx[i] = 0;
+    }
+}
+
+function updateTimers() {
+    if (delayTimer > 0) {
+        delayTimer--;
+    }
+    if (soundTimer > 0) {
+        if (soundTimer === 1) {
+            console.log("BEEP!\n");
+        }
+        soundTimer--;
     }
 }
 
