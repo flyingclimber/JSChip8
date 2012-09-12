@@ -93,7 +93,7 @@ function initialize() {
 
     clearScreen();
     clearStack();
-    clearAllRegisters();
+    clearRegisters();
     clearMemory();
     
     for (i = 0; i < 80; i++) { // Load font set
@@ -334,7 +334,7 @@ function clearStack() {
     }
 }
 
-function clearAllRegisters() {
+function clearRegisters() {
     for (i = 0; i < 16; i++) {
         chip8RV[i] = 0;
     }
