@@ -351,10 +351,6 @@ function clearTimers() {
     soundTimer = 0;
 }
 
-function setKeys() {
-    key[keypress] = 1;
-}
-
 function keyDown(evt) {
     setKey(evt,1);
 }
