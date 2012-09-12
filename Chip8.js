@@ -104,7 +104,7 @@ function initialize() {
         memory[i + 512] = ROM.charCodeAt(i);
     }
 
-    resetTimers();
+    clearTimers();
 }
 
 function loadFile(evt) {
@@ -346,7 +346,7 @@ function clearMemory() {
     }
 }
 
-function resetTimers() {
+function clearTimers() {
     delayTimer = 0;
     soundTimer = 0;
 }
