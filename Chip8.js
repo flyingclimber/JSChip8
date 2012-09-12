@@ -300,7 +300,7 @@ function emulateCycle() {
                     break;
                 case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.
                     reg = (opcode & 0x0F00) >> 8;
-                    for (var i = 0; i <= reg; i++) {
+                    for (i = 0; i <= reg; i++) {
                         memory[I + i] = chip8RV[i];
                     }
                     I += reg + 1;
@@ -323,7 +323,7 @@ function emulateCycle() {
       }
 
 function clearScreen() {
-    for (var i = 0; i < gfx.length; i++) {
+    for (i = 0; i < gfx.length; i++) {
         gfx[i] = 0;
     }
 }
