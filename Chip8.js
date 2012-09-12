@@ -71,7 +71,7 @@ function main() {
 function chip8Cycle() {
     emulateCycle();
     if (this.drawFlag) {
-        drawGraphics();
+        updateGraphics();
     }
 }
 
@@ -413,7 +413,7 @@ function setupGraphics() {
     ctx.fillRect (0, 0, 64, 32);
 }
 
-function drawGraphics() {
+function updateGraphics() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     for (y = 0; y < 32; y++) {
