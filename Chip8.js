@@ -91,13 +91,13 @@ function initialize() {
 }
 
 function chip8Cycle() {
-    emulateCycle();
+    decodeOpcode();
     if (this.drawFlag) {
         updateGraphics();
     }
 }
 
-function emulateCycle() {
+function decodeOpcode() {
 
     opcode = memory[pc] << 8 | memory[pc + 1];
 
