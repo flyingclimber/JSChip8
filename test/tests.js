@@ -179,7 +179,7 @@ test("0x8XY4 with carry", function() {
     chip8RV[1] = 250;
     chip8RV[2] = 250;
     decodeOpcode();
-    equal(chip8RV[1], 500,"Add VY to VX with carry");
+    equal(chip8RV[1], 244,"Add VY to VX with carry");
     equal(chip8RV[0xF], 1, "Set carry bit");
     equal(pc,2,"Increment pc");
 });
@@ -206,7 +206,7 @@ test("0x8XY5 with borrow", function() {
     chip8RV[1] = 32;
     chip8RV[2] = 34;
     decodeOpcode();
-    equal(chip8RV[1], -2,"Subtract VY from VX");
+    equal(chip8RV[1], 254,"Subtract VY from VX");
     equal(chip8RV[0xF], 0, "Set borrow bit");
     equal(pc,2,"Increment pc");
 });
