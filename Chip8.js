@@ -22,9 +22,15 @@ var chip8RV = [];
 var key = [];
 var stack = [];
 var memory = [];
+var chip8Fontset = [];
 var pc = 0;
+var I = 0;
+var opcode = 0;
+var sp = 0;
+var delayTimer = 0;
+var soundTimer = 0;
 var multiplier = 10;
-var chip8_fontset = [];
+var drawFlag = false;
 
 chip8Fontset = [
   0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -44,7 +50,7 @@ chip8Fontset = [
   0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 ];
-var rom;
+var ROM;
 var gfx = new Array(64 * 32);
 var keypress = 0; // Current key press
 
@@ -79,6 +85,7 @@ function initialize() {
     clearRegisters();
     clearMemory();
     
+    var i = 0;
     for (i = 0; i < 80; i++) { // Load font set
         memory[i] = chip8Fontset[i];
     }
@@ -223,6 +230,7 @@ function decodeOpcode() {
             var x = chip8RV[(opcode & 0x0F00) >> 8];
             var y = chip8RV[(opcode & 0x00F0) >> 4];
             var h = (opcode & 0x000F);
+            var pixel = 0;
 
             chip8RV[0xF] = 0;
             for (var yline = 0; yline < h; yline++) {
@@ -276,7 +284,7 @@ function decodeOpcode() {
                     pc += 2;
                     break;
                 case 0x0029: //FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
-                    character = chip8RV[(opcode & 0x0F00) >> 8];
+                    var character = chip8RV[(opcode & 0x0F00) >> 8];
                     I = parseInt(character, 16) * 5;
                     pc += 2;
                     break;
@@ -287,8 +295,8 @@ function decodeOpcode() {
                     pc += 2;
                     break;
                 case 0x0055: //FX55	Stores V0 to VX in memory starting at address I.
-                    reg = (opcode & 0x0F00) >> 8;
-                    for (i = 0; i <= reg; i++) {
+                    var reg = (opcode & 0x0F00) >> 8;
+                    for (var i = 0; i <= reg; i++) {
                         memory[I + i] = chip8RV[i];
                     }
                     I += reg + 1;
@@ -311,7 +319,7 @@ function decodeOpcode() {
       }
 
 function clearScreen() {
-    for (i = 0; i < gfx.length; i++) {
+    for (var i = 0; i < gfx.length; i++) {
         gfx[i] = 0;
     }
 }
@@ -329,19 +337,19 @@ function updateTimers() {
 }
 
 function clearStack() {
-    for (i = 0; i < 16; i++) {
+    for (var i = 0; i < 16; i++) {
         stack[i] = 0;
     }
 }
 
 function clearRegisters() {
-    for (i = 0; i < 16; i++) {
+    for (var i = 0; i < 16; i++) {
         chip8RV[i] = 0;
     }
 }
 
 function clearMemory() {
-    for (i = 0; i < 4096; i++) {
+    for (var i = 0; i < 4096; i++) {
         memory[i] = 0;
     }
 }
@@ -424,6 +432,9 @@ function setupGraphics() {
 function updateGraphics() {
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
+    var y = 0;
+    var x = 0;
+
     for (y = 0; y < 32; y++) {
         for (x = 0; x < 64; x++) {
             if (gfx[(64 * y) + x]) {
