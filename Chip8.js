@@ -325,14 +325,16 @@ function clearScreen() {
 }
 
 function updateTimers() {
-    if (delayTimer > 0) {
-        delayTimer--;
-    }
-    if (soundTimer > 0) {
-        if (soundTimer === 1) {
-            console.log("BEEP!\n");
+    for (i = 0; i < 3; i++) {
+        if (delayTimer > 0) {
+            delayTimer--;
         }
-        soundTimer--;
+        if (soundTimer > 0) {
+            if (soundTimer === 1) {
+                console.log("BEEP!\n");
+            }
+            soundTimer--;
+        }
     }
 }
 
