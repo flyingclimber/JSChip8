@@ -37,7 +37,7 @@ test("0x00EE", function() {
     stack = new Array();
     stack[0] = 2; 
     decodeOpcode();
-    equal(pc,4,"Return from a subroutine"); 
+    equal(pc,2,"Return from a subroutine"); 
 });
 test("0x1NNN", function() {
     pc = 0;
@@ -417,5 +417,91 @@ test("0xFX65", function() {
     memory[4] = 30;
     decodeOpcode();
     equal(chip8RV[1], 20, "Fill V0 to VX from I");
+    equal(pc,2,"Increment pc");
+});
+
+test("0x00F0", function() {
+
+    equal(pc,2,"Increment pc");
+});
+
+test("0x00FB", function() {
+    pc = 0;
+    memory = new Array();
+    memory[0] = '0x00';
+    memory[1] = '0xFB';
+    clearRegisters();
+    gfx[0] = 1;
+    decodeOpcode();
+    equal(gfx[0+64*4],1,"Shift four pixels right");
+    equal(pc,2,"Increment pc");
+});
+
+test("0x00FC", function() {
+    pc = 0;
+    memory = new Array();
+    memory[0] = '0x00';
+    memory[1] = '0xFC';
+    clearRegisters();
+    gfx[256] = 1;
+    decodeOpcode();
+    equal(gfx[1],1,"Shift four pixels left");
+    equal(pc,2,"Increment pc");
+});
+
+test("0x00FE", function() {
+    pc = 0;
+    memory = new Array();
+    memory[0] = '0x00';
+    memory[1] = '0xFE';
+    clearRegisters();
+    decodeOpcode();
+    equal(height,64,"Change height to 64");
+    equal(pc,2,"Increment pc");
+});
+
+test("0x00FF", function() {
+    pc = 0;
+    memory = new Array();
+    memory[0] = '0x00';
+    memory[1] = '0xFF';
+    clearRegisters();
+    decodeOpcode();
+    equal(height,128,"Change height to 64");
+    equal(pc,2,"Increment pc");
+});
+
+test("0x0075", function() {
+    pc = 0;
+    memory[0] = '0xF1';
+    memory[1] = '0x75';
+    clearFlags();
+    clearRegisters();
+    chip8RV[1] = 50;
+    decodeOpcode();
+    equal(flag[1], 50,"Store 50 in V[1] and move to flag[1]");
+    equal(pc,2,"Increment pc");
+});
+
+test("0x0085", function() {
+    pc = 0;
+    memory[0] = '0xF1';
+    memory[1] = '0x85';
+    clearFlags();
+    clearRegisters();
+    flag[1] = 50;
+    decodeOpcode();
+    equal(chip8RV[1], 50,"Store 50 in V[1] and move to flag[1]");
+    equal(pc,2,"Increment pc");
+});
+
+test("0x00CN", function() { 
+    pc = 0;
+    memory[0] = '0x00';
+    memory[1] = '0xC5';
+    gfx[0] = 1;
+    clearRegisters();
+    decodeOpcode();
+    equal(gfx[5],1, "Shift 5 spaces down");
     equal(pc,2,"Increment pc");
 });

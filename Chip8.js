@@ -31,6 +31,10 @@ var delayTimer = 0;
 var soundTimer = 0;
 var multiplier = 10;
 var drawFlag = false;
+var height = 64;
+var width = 32;
+var gfx = [];
+var flag = [];
 
 chip8Fontset = [
   0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -112,7 +116,13 @@ function decodeOpcode() {
     switch(opcode & 0xF000) {
         //All opcodes from http://en.wikipedia.org/wiki/CHIP-8
         case 0x0000:
-            switch(opcode & 0x00FF) {
+            switch(opcode & 0x00F0) {
+                case 0x00C0: //SuperChip8: 00CN scroll the screen down N lines
+                    lines = (opcode & 0x000F);
+                    scrollScreen(lines,0,0);
+                    pc += 2;
+                    drawFlag = true;
+                    break;
                 case 0x00E0: //00E0	Clears the screen.
                     clearScreen();
                     pc += 2;
@@ -123,8 +133,33 @@ function decodeOpcode() {
                     pc = stack[sp];
                     pc += 2;
                     break;
-                default:
-                    console.log("Unknown opcode 0x" + opcode.toString(16));
+                case 0x00F0:
+                    switch(opcode & 0x00FF) {
+                        case 0x00FB: //00FB SuperChip8: scroll screen 4 pixels right
+                            scrollScreen(0,0,4);
+                            drawFlag = true;
+                            pc += 2;
+                            break;
+                        case 0x00FC: //00FC SuperChip8: scroll screen 4 pixels left 
+                            scrollScreen(0,4,0);
+                            pc += 2;
+                            drawFlag = true;
+                            break;
+                        case 0x00FE: //00FE SuperChip8: disable extended screen mode
+                            heigth = 64;
+                            width = 32;
+                            setupGraphics();
+                            pc += 2;
+                            break;
+                        case 0x00FF: //00FF SuperChip8: enable extended screen mode (128 x 64)
+                            heigth = 128;
+                            width = 64;
+                            setupGraphics();
+                            pc += 2;
+                            break;
+                    }
+            default:
+                console.log("Unknown opcode 0x" + opcode.toString(16));
             }
             break;
         case 0x1000: //1NNN	Jumps to address NNN.
@@ -233,14 +268,22 @@ function decodeOpcode() {
             var pixel = 0;
 
             chip8RV[0xF] = 0;
+
+            var spriteSize;
+            if ( h === 0 && height === 128 ) {
+                spriteSize = 16; 
+            } else {
+                spriseSize = 8;
+            }
+            
             for (var yline = 0; yline < h; yline++) {
                 pixel = memory[I + yline];
-                for ( var xline = 0; xline < 8; xline++) {
+                for ( var xline = 0; xline < spriteSize; xline++) {
                     if ((pixel & (0x80 >> xline)) !== 0 ) {
-                        if (gfx[(x + xline + ((y + yline) * 64))] === 1) {
+                        if (gfx[(x + xline + ((y + yline) * height))] === 1) {
                             chip8RV[0xF] = 1;
                         }
-                        gfx[x + xline + ((y + yline) * 64)] ^= 1; 
+                        gfx[x + xline + ((y + yline) * height)] ^= 1; 
                     }
                 }
             }
@@ -288,6 +331,11 @@ function decodeOpcode() {
                     I = parseInt(character, 16) * 5;
                     pc += 2;
                     break;
+                case 0x0030: //FX30 SuperChip8: Sprite is 10 bytes high.
+                    character = chip8RV[(opcode & 0x0F00) >> 8];
+                    I = parseInt(character, 16) * 10;
+                    pc += 2;
+                    break;
                 case 0x0033: //FX33	Stores the Binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2.
                     memory[I] = chip8RV[(opcode & 0x0F00) >> 8] / 100;
                     memory[I + 1] = (chip8RV[(opcode & 0x0F00) >> 8] / 10) % 10;
@@ -308,6 +356,20 @@ function decodeOpcode() {
                         chip8RV[i] = memory[I + i];
                     }
                     I += reg + 1;
+                    pc += 2;
+                    break;
+                case 0x0075: //FX75 SuperChip8 Store V0..VX in RPL user flags (X <= 7)
+                    reg = (opcode & 0x0F00) >> 8;
+                    for (i = 0; i <= reg; i++) {
+                        flag[i] = chip8RV[i];
+                    }
+                    pc += 2;
+                    break;
+                case 0x0085: //FX85 SuperChip8 Read V0..VX from RPL user flags (X <= 7)
+                    reg = (opcode & 0x0F00) >> 8;
+                    for (i = 0; i <= reg; i++) {
+                        chip8RV[i] = flag[i];
+                    }
                     pc += 2;
                     break;
             }
@@ -357,6 +419,13 @@ function clearMemory() {
 function clearTimers() {
     delayTimer = 0;
     soundTimer = 0;
+}
+
+function clearFlags() {
+    for (var i = 0; i < 16; i++) {
+        flag[i] = 0;
+    }
+
 }
 
 function keyDown(evt) {
@@ -426,7 +495,8 @@ function setupGraphics() {
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "rgb(1,0,0)";
     ctx.scale(multiplier,multiplier);
-    ctx.fillRect (0, 0, 64, 32);
+    ctx.fillRect (0, 0, height, width);
+    gfx = new Array(height * width);
 }
 
 function updateGraphics() {
@@ -435,9 +505,9 @@ function updateGraphics() {
     var y = 0;
     var x = 0;
 
-    for (y = 0; y < 32; y++) {
-        for (x = 0; x < 64; x++) {
-            if (gfx[(64 * y) + x]) {
+    for (y = 0; y < width; y++) {
+        for (x = 0; x < height; x++) {
+            if (gfx[(height * y) + x]) {
                 ctx.fillStyle = "rgb(200,0,0)";
                 ctx.fillRect(x,y,1,1);
             } else {
@@ -447,4 +517,23 @@ function updateGraphics() {
         }
     }
     drawFlag = false;
+}
+
+function scrollScreen(down,left,right) {
+
+    gfxCopy = new Array();
+
+    for(y = 0; y < width; y++) {
+        for(x = 0; x < height; x++) {
+            if(gfx[(height * y) + x]) {
+                if(down)
+                    gfxCopy[((height * y) + down) + (x + left + right)] = 1; 
+                if(left)
+                    gfxCopy[((height * y) - (height * left))] = 1; 
+                if(right)
+                    gfxCopy[((height * y) + (height * right))] = 1; 
+            }
+        }
+    }
+    gfx = gfxCopy;
 }
