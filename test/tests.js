@@ -229,14 +229,14 @@ test("0xCXNN", function() {
 //DXYN
 test("0xEX9E", function() {
     Chip8.initialize(['0xE1','0x9E']);
-    key[0x8] = 1;
+    Chip8.key[0x8] = 1;
     Chip8.v[1] = '0x8';   
     Chip8.decodeOpcode();
     equal(Chip8.pc,516,"Skip if key in VX is pressed");
 });
 test("0xEXA1", function() {
     Chip8.initialize(['0xE1','0xA1']);
-    key[0x8] = 0;
+    Chip8.key[0x8] = 0;
     Chip8.v[1] = '0x8';   
     Chip8.decodeOpcode();
     equal(Chip8.pc,516,"Skip if key in VX isnt pressed");

@@ -47,6 +47,7 @@ Chip8 = {
     pc: 0, // Program Counter
     I: 0,
     rom: false,
+    key: [],
 
     delayTimer: 0,
     soundTimer: 0,
@@ -226,10 +227,10 @@ Chip8 = {
             case 0xE000:
                 switch(opcode & 0x000F) {
                     case 0x000E: //EX9E	Skips the next instruction if the key stored in VX is pressed.
-                        this.pc += ( key[parseInt(this.v[(opcode & 0x0F00) >> 8], 16)] === 1 ) ? 4: 2;
+                        this.pc += ( this.key[parseInt(this.v[(opcode & 0x0F00) >> 8], 16)] === 1 ) ? 4: 2;
                         break;
                     case 0x0001: //EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-                        this.pc += ( key[parseInt(this.v[(opcode & 0x0F00) >> 8], 16)] === 0 ) ? 4 : 2;
+                        this.pc += ( this.key[parseInt(this.v[(opcode & 0x0F00) >> 8], 16)] === 0 ) ? 4 : 2;
                         break;
                 }
                 break;
@@ -337,7 +338,6 @@ Chip8 = {
 };
 
 var multiplier = 10;
-var key = [];
 var keypress = 0; // Current key press
 var ROM;
 
@@ -419,7 +419,7 @@ function setKey(evt,state) {
             keypress = 0xF;
             break;
     }
-    key[keypress] = state;
+    Chip8.key[keypress] = state;
 }
 
 function setupGraphics() {
