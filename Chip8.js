@@ -18,7 +18,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-Chip8 = {
+var Chip8 = {
     v: new Array(16), //Registers
     stack: [],
     sp: 0,
