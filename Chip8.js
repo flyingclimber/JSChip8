@@ -22,7 +22,7 @@ var Chip8 = {
     v: new Array(16), //Registers
     stack: [],
     sp: 0,
-    memory: Array(4096), // 4K Max
+    memory: new Array(4096), // 4K Max
     gfx: new Array(64 * 32),
 
     fontset: [
@@ -59,6 +59,9 @@ var Chip8 = {
         this.clearRegisters();
         this.clearMemory();
         this.clearTimers();
+
+
+        var i = 0;
 
         if(ROM) {
             for (i = 0; i < ROM.length; i++ ) { // Load ROM
@@ -333,7 +336,7 @@ var Chip8 = {
     clearTimers: function() {
         this.delayTimer = 0;
         this.soundTimer = 0;
-    },
+    }
 
 };
 
