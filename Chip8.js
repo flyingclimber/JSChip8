@@ -158,6 +158,7 @@ function decodeOpcode() {
                             pc += 2;
                             break;
                     }
+                break;
             default:
                 console.log("Unknown opcode 0x" + opcode.toString(16));
             }
@@ -523,17 +524,20 @@ function updateGraphics() {
 
 function scrollScreen(down,left,right) {
 
-    gfxCopy = new Array();
+    gfxCopy = [];
 
     for(y = 0; y < width; y++) {
         for(x = 0; x < height; x++) {
             if(gfx[(height * y) + x]) {
-                if(down)
+                if(down) {
                     gfxCopy[((height * y) + down) + (x + left + right)] = 1; 
-                if(left)
+                }
+                if(left) {
                     gfxCopy[((height * y) - (height * left))] = 1; 
-                if(right)
+                }
+                if(right) {
                     gfxCopy[((height * y) + (height * right))] = 1; 
+                }
             }
         }
     }
