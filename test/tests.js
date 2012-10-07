@@ -122,7 +122,7 @@ test("0x8XY3", function() {
     Chip8.v[1] = 32;
     Chip8.v[2] = 34;
     Chip8.decodeOpcode();
-    equal(Chip8.FAIL, false,"Missing test");
+    equal(Chip8.v[1], 2,"Sets VX to VX xor VY");
     equal(Chip8.pc,514,"Increment pc");
 });
 test("0x8XY4", function() {
