@@ -7,7 +7,7 @@ module.exports = function(grunt) {
       files: ['grunt.js', 'Chip8.js', 'lib/**/*.js' ]
     },
     qunit: {
-      files: ['test/qunit.html']
+      files: ['qunit.html']
     },
     watch: {
       files: '<config:lint.files>',
