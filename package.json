@@ -1,6 +1,8 @@
-"devDependencies": {
-  "grunt": "~0.3.16"
-},
-"scripts": {
-  "test": "grunt travis --verbose"
+{
+    "devDependencies": {
+      "grunt": "~0.3.16"
+    },
+    "scripts": {
+          "test": "grunt travis --verbose"
+    }
 }
