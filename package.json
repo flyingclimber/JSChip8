@@ -1,4 +1,5 @@
 {
+    "name": "JSChip8",
     "devDependencies": {
       "grunt": "~0.3.16"
     },
