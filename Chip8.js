@@ -21,8 +21,8 @@
 var Chip8 = {
     v: [], // Registers (16)
     stack: [],
-    sp: 0, // Stack pointer
     memory: [], // 4k max
+    key: [], // Current key press
     gfx: [], // 64 x 32
 
     fontset: [
@@ -46,12 +46,14 @@ var Chip8 = {
 
     pc: 0, // Program Counter
     I: 0,
+    sp: 0, // Stack pointer
+
     rom: false,
-    key: [],
+    romIsBinary: false,
+    drawFlag: false,
 
     delayTimer: 0,
     soundTimer: 0,
-    drawFlag: false,
     
     initialize: function(ROM) {
         this.clearGfx();
@@ -59,18 +61,14 @@ var Chip8 = {
         this.clearRegisters();
         this.clearMemory();
         this.clearTimers();
+        
+        if (ROM) {
+            Chip8.rom = ROM;
+        }
 
-
-        var i = 0;
-
-        if(ROM) {
-            for (i = 0; i < ROM.length; i++ ) { // Load ROM
-                this.memory[i + 512] = ROM[i];
-            }
-        } else {
-            for (i = 0; i < ROMC.length; i++ ) { // Load ROM
-                this.memory[i + 512] = ROMC.charCodeAt(i);
-            }
+        for (var i = 0; i < Chip8.rom.length; i++ ) { // Load ROM
+            this.memory[i + 512] = 
+                (Chip8.romIsBinary) ? Chip8.rom.charCodeAt(i) : Chip8.rom[i];
         }
 
         this.pc = 0x200;
@@ -342,14 +340,14 @@ var Chip8 = {
 
 var multiplier = 10;
 var keypress = 0; // Current key press
-var ROM;
 
 function loadFile(evt) {
     var files = evt.target.files;
 
     var binaryHandle = new FileReader();
     binaryHandle.onload = function () {
-        ROMC = binaryHandle.result;
+        Chip8.rom = binaryHandle.result;
+        Chip8.romIsBinary = true;
     };
     binaryHandle.readAsBinaryString(files[0]);
 }
