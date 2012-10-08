@@ -19,11 +19,11 @@
 */
 
 var Chip8 = {
-    v: new Array(16), //Registers
+    v: [], // Registers (16)
     stack: [],
-    sp: 0,
-    memory: new Array(4096), // 4K Max
-    gfx: new Array(64 * 32),
+    sp: 0, // Stack pointer
+    memory: [], // 4k max
+    gfx: [], // 64 x 32
 
     fontset: [
       0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
