@@ -1,0 +1,10 @@
+{
+    "name": "JSChip8",
+    "version": "0.7.0",
+    "devDependencies": {
+      "grunt": "~0.3.16"
+    },
+    "scripts": {
+          "test": "grunt travis --force --verbose"
+    }
+}
