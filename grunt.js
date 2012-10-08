@@ -4,7 +4,7 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     lint: {
-      files: ['grunt.js', 'Chip8.js', 'lib/**/*.js' ]
+      files: ['grunt.js', 'Chip8.js', 'lib/**/*.js', 'package.json' ]
     },
     qunit: {
       files: ['qunit.html']
@@ -33,5 +33,8 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', 'lint qunit');
+
+  // Travis CI task.
+  grunt.registerTask('travis', 'lint qunit');
 
 };
