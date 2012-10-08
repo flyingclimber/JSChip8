@@ -32,11 +32,18 @@ test("clearTimers()", function() {
 test("Check font set: A", function() {
     ROM = [0];
     Chip8.initialize(ROM);
-    equal(Chip8.fontset[50], 0x0F0, "Check 1 fontset");
-    equal(Chip8.fontset[51], 0x090, "Check 2 fontset");
-    equal(Chip8.fontset[52], 0x0F0, "Check 3 fontset");
-    equal(Chip8.fontset[53], 0x090, "Check 5 fontset");
-    equal(Chip8.fontset[54], 0x090, "Check 6 fontset");
+    equal(Chip8.fontset[50], 0xF0, "Check 1 fontset");
+    equal(Chip8.fontset[51], 0x90, "Check 2 fontset");
+    equal(Chip8.fontset[52], 0xF0, "Check 3 fontset");
+    equal(Chip8.fontset[53], 0x90, "Check 5 fontset");
+    equal(Chip8.fontset[54], 0x90, "Check 6 fontset");
+
+    equal(Chip8.memory[50], 0xF0, "Check 1 fontset in memory");
+    equal(Chip8.memory[51], 0x90, "Check 2 fontset in memory");
+    equal(Chip8.memory[52], 0xF0, "Check 3 fontset in memory");
+    equal(Chip8.memory[53], 0x90, "Check 5 fontset in memory");
+    equal(Chip8.memory[54], 0x90, "Check 6 fontset in memory");
+
 });
 test("0x00E0", function() {
     Chip8.initialize(['0x00','0xE0']);

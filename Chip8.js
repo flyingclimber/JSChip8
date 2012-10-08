@@ -61,12 +61,16 @@ var Chip8 = {
         this.clearRegisters();
         this.clearMemory();
         this.clearTimers();
+
+        for (var i = 0; i < 80; i++) { // Load font set
+            this.memory[i] = this.fontset[i];
+        }
         
         if (ROM) {
             Chip8.rom = ROM;
         }
 
-        for (var i = 0; i < Chip8.rom.length; i++ ) { // Load ROM
+        for (i = 0; i < Chip8.rom.length; i++) { // Load ROM
             this.memory[i + 512] = 
                 (Chip8.romIsBinary) ? Chip8.rom.charCodeAt(i) : Chip8.rom[i];
         }
