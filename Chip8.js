@@ -547,5 +547,5 @@ function scrollScreen(down,left,right) {
             }
         }
     }
-    this.gfx = gfxCopy;
+    Chip8.gfx = gfxCopy;
 }
