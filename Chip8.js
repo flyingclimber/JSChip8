@@ -357,8 +357,6 @@ function loadFile(evt) {
 }
 
 function main() {
-    setupGraphics();
-
     Chip8.initialize();
 
     setInterval(function () { Chip8.cycle(); }, 1000 / 450);
@@ -428,11 +426,19 @@ function setKey(evt,state) {
 }
 
 function setupGraphics() {
+    setupControls();
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "rgb(1,0,0)";
     ctx.scale(multiplier,multiplier);
     ctx.fillRect (0, 0, 64, 32);
+}
+
+function setupControls() {
+   var start = document.getElementById("control-start");
+   start.onclick = function() { main(); };
+   var reset = document.getElementById("control-reset");
+   reset.onclick = function() { main(); };
 }
 
 function updateGraphics() {

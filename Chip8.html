@@ -1,14 +1,19 @@
 <html>
 <head></head>
 <body>
-    <script src="Chip8.js"></script>
     <canvas id="canvas" width="1024" height="512"></canvas>
+    <div id="controls">
+        <a id="control-start" href="#">Start</a>
+        <a id="control-reset" href="#">Reset</a>
+    </div>
     <input type="file" id="files" name="files[]" />
     <output id="list"></output>
+    <script src="Chip8.js"></script>
     <script >
       document.getElementById('files').addEventListener('change', loadFile, false);
       window.addEventListener('keydown',keyDown,true);
       window.addEventListener('keyup',keyUp,true);
+      setupGraphics();
     </script>
 </body>
 </html>
