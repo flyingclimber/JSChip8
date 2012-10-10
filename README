@@ -1,3 +1,3 @@
 JSChip8 - A JavaScript Chip8 interpreter
 
-To use load Chip8.html in your browser and then load a rom. Pop open your JS console and run main().
+To use load Chip8.html in your browser and then load a rom. Click 'Start' to run your rom.
