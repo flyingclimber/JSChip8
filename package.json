@@ -1,10 +1,10 @@
 {
-    "name": "JSChip8",
-    "version": "0.7.0",
-    "devDependencies": {
-      "grunt": "~0.3.16"
-    },
-    "scripts": {
-          "test": "grunt travis --force --verbose"
-    }
+  "name": "JSChip8",
+  "version": "0.7.0",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-qunit": "~0.3.0",
+    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-contrib-csslint": "~0.1.2"
+  }
 }

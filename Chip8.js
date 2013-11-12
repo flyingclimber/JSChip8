@@ -71,7 +71,7 @@ var Chip8 = {
         }
 
         for (i = 0; i < Chip8.rom.length; i++) { // Load ROM
-            this.memory[i + 512] = 
+            this.memory[i + 512] =
                 (Chip8.romIsBinary) ? Chip8.rom.charCodeAt(i) : Chip8.rom[i];
         }
 
@@ -157,7 +157,7 @@ var Chip8 = {
                         this.pc += 2;
                         break;
                     case 0x0004: //8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
-                        this.v[0xF] = 
+                        this.v[0xF] =
                             ((this.v[(opcode & 0x00F0) >> 4] + this.v[(opcode & 0x0F00) >> 8]) > 0xFF) ? 1 : 0;
                         this.v[(opcode & 0x0F00) >> 8] += this.v[(opcode & 0x00F0) >> 4];
                         this.v[(opcode & 0x0F00) >> 8] &= 0xFF;
@@ -221,7 +221,7 @@ var Chip8 = {
                             if (this.gfx[(x + xline + ((y + yline) * 64))] === 1) {
                                 this.v[0xF] = 1;
                             }
-                            this.gfx[x + xline + ((y + yline) * 64)] ^= 1; 
+                            this.gfx[x + xline + ((y + yline) * 64)] ^= 1;
                         }
                     }
                 }
@@ -244,7 +244,7 @@ var Chip8 = {
                     case 0x0007: //FX07	Sets VX to the value of the delay timer.
                         this.v[(opcode & 0x0F00) >> 8] = this.delayTimer;
                         this.pc += 2;
-                        break; 
+                        break;
                     case 0x000A: //FX0A	A key press is awaited, and then stored in VX.
                         if (keypress !== 0) {
                             this.v[(opcode & 0x0F00) >> 8] = keypress;
@@ -442,8 +442,8 @@ function setupControls() {
 }
 
 function updateGraphics() {
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
     var y = 0;
     var x = 0;
 
